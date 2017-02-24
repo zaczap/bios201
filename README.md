@@ -1,1 +1,1 @@
-# bios201
+# BIOS 201: Next-generation sequencing and applications
