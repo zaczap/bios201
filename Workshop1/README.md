@@ -98,6 +98,8 @@ You can see a `.html` file and a `.zip` file for each FASTQ file - if we downloa
 
 * :question: **What happens to the quality of sequenced bases in later cycles?**
 
+<!-- The qualities drop off in the latter cycles -->
+
 ## Removing adapters, trimming reads, and filtering
 
 From the FASTQC results, you can see a little bit of adapter contamination as well a tell-tale drop off in sequencing quality towards the end of the reads. We can remove adapter contamination and trim these low-quality bases using the tool `cutadapt`:
@@ -121,6 +123,8 @@ So let's run the actual command:
 	cutadapt -q 10 --minimum-length 30 -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC  -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT -o NA12878_R1.qc.trimmed.fastq -p NA12878_R2.qc.trimmed.fastq NA12878_R1.fastq NA12878_R2.fastq
 
 * :question: **How many read pairs were there before/after trimming?**
+
+<!-- before: 10,844, after: 10,336 -->
 
 Now we've removed adapters and trimmed low quality bases; we've also filtered out very short reads which would probably not align to the genome anyway.
 
@@ -157,6 +161,8 @@ We can see how well the alignments were by running the following commands:
 	samtools flagstat NA12892.bam
 
 * :question: **What percentage of reads for NA12878 were successfully mapped?**
+
+<!-- 93.86% -->
 
 ## Marking PCR duplicates and performing base quality recalibration
 
@@ -231,7 +237,9 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 
 	java -jar $GATK -T PhaseByTransmission -R grch37.fa -V raw_variants.vcf -ped family.ped -o phased_variants.vcf
 
-* :question: **How many sites were not phased?** <!-- 10 variants -->
+* :question: **How many sites were not phased?** 
+
+<!-- 10 variants -->
 
 ## Filter variants
 
@@ -244,7 +252,7 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 	java -jar $GATK -R grch37.fa -T SelectVariants -V flagged_snps.vcf -o filtered_snps.vcf -o -selectType SNP -ef --restrictAllelesTo BIALLELIC
 
 * :question: **How many variants are in the filtered VCF file?** 
-* :question: **For the variant at 17:41204377, what is the ref allele and alt allele?** 
+* :question: **For the variant at 17:41204377, what are the ref allele and alt alleles?** 
 * :question: **For the variant at 17:41204377, how many of the individuals were heterozygous?** 
 * :question: **For the variant at 17:41204377, how many reads supported the ref allele? the alt allele?** 
 
@@ -262,7 +270,14 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 	more raw_to_platinum_comparison.diff.indv 
 	more filtered_to_platinum_comparison.diff.indv 
 
-<!-- INDV    N_COMMON_CALLED N_DISCORD       DISCORDANCE
-NA12878 134     0       0
-NA12891 134     0       0
-NA12892 134     0       0 -->
+* **How many variants were called for NA12892 in the raw VCF:question:**
+* **How many of those were wrong (compared to the platinum genomes):question:** 
+* **How did the results change after filtering:question:**
+
+<!-- 196 -->
+<!-- 4 -->
+<!-- There was no measured discordance -->
+
+
+
+
