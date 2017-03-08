@@ -96,6 +96,7 @@ You can see a `.html` file and a `.zip` file for each FASTQ file - if we downloa
 - [NA12878_R1.fastq](http://www.stanford.edu/~zappala/bios201/NA12878_R1.html)
 - [NA12878_R2.fastq](http://www.stanford.edu/~zappala/bios201/NA12878_R2.html)
 
+The FASTQC files can help you diagnose various issues you may have had - we will just consider adapter contamination and trimming low-quality bases today.
 
 * :question: **What happens to the quality of sequenced bases in later cycles?**
 
