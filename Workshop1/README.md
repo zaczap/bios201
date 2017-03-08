@@ -30,19 +30,8 @@ In the following workshop, you will learn to:
 	+-------+     +---------------+     +---------+     +-----+
 
 * [FASTQ](fastq_format.md)
-
-### SAM/BAM
-
-When we align reads to a reference genome, we generated a _sequence alignment_ which we store in either plaintext (SAM) or binary (BAM) - these two file types are the same except one is human readable and larger on disk than the other other. An example line is given here:
-	
-	HWI-D00360:6:H81VLADXX:1:1101:13347:2151        2177    17      188091  5       73H59M16H       =       74713352        74525262        AAAAATATAAAACTTAGCTGGGCATGGTAGCACACACCTGTAGTCTCAGCTACTCAGGA     CEEEEBCCDEEC>::C:@>>??AC32144::@4?<@5<>>+:4+(4(>((4>>34@49A     NM:i:4  MD:Z:6T21G5T14A9        AS:i:39 XS:i:34 SA:Z:17,4264587,+,101M47S,5,7;  XA:Z:17,+73713822,102S34M12S,0;17,-19146648,12S43M93S,2;
-
-### VCF
-
-Variant call files contain information on variants observed (relative to a reference genome) in one or more samples. An short example is shown here:
-
-	#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12878 NA12891 NA12892
-	17      41196408        .       G       A       1349.16 PASS    AC=2;AF=0.333;AN=6;BaseQRankSum=-6.450e-01;ClippingRankSum=0.00;DP=121;ExcessHet=3.9794;FS=0.881;MLEAC=2;MLEAF=0.333;MQ=60.00;MQRankSum=0.00;QD=16.06;ReadPosRankSum=-1.180e+00;SOR=0.909  GT:AD:DP:GQ:PL:TP       1|0:17,24:41:99:623,0,430:96    0|0:35,0:35:96:0,96,1440:96     1|0:18,25:43:99:758,0,510:96
+* [SAM/BAM](sam_format.md)
+* [VCF](vcf_format.mt)
 
 ## Setup
 
