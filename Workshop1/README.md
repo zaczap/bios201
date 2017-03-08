@@ -96,6 +96,8 @@ You can see a `.html` file and a `.zip` file for each FASTQ file - if we downloa
 - [NA12878_R1.fastq](http://www.stanford.edu/~zappala/bios201/NA12878_R1.html)
 - [NA12878_R2.fastq](http://www.stanford.edu/~zappala/bios201/NA12878_R2.html)
 
+:question: **What happens to the quality of sequenced bases in later cycles?**
+
 ## Removing adapters, trimming reads, and filtering
 
 From the FASTQC results, you can see a little bit of adapter contamination as well a tell-tale drop off in sequencing quality towards the end of the reads. We can remove adapter contamination and trim these low-quality bases using the tool `cutadapt`:
@@ -117,6 +119,8 @@ From the FASTQC results, you can see a little bit of adapter contamination as we
 So let's run the actual command:
 
 	cutadapt -q 10 --minimum-length 30 -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC  -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT -o NA12878_R1.qc.trimmed.fastq -p NA12878_R2.qc.trimmed.fastq NA12878_R1.fastq NA12878_R2.fastq
+
+:question: **How many read pairs were there before/after trimming?**
 
 Now we've removed adapters and trimmed low quality bases; we've also filtered out very short reads which would probably not align to the genome anyway.
 
@@ -180,7 +184,7 @@ Then we index these BAMs:
 
 And we perform base quality recalibration:
 
-	java -jar $PICARD CreateSequenceDictionary R=grch37.fa O=grch37.dict # not necessary?
+<!--java -jar $PICARD CreateSequenceDictionary R=grch37.fa O=grch37.dict # not necessary?-->
 	
 	java -jar $GATK -T BaseRecalibrator -R grch37.fa -I NA12878.markduplicates.rg.bam -knownSites knownSites.vcf -o NA12878.recal_data.table
 
@@ -219,15 +223,26 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 
 	time java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa --variant NA12878.g.vcf --variant NA12891.g.vcf  --variant NA12892.g.vcf -o raw_variants.vcf
 
+:question: **How many variants are in the joint VCF file?** (_Hint_: Run vcftools on `raw_variants.vcf`.) <!-- 201 sites -->
+
 ## Phasing within the trio
 
 	java -jar $GATK -T PhaseByTransmission -R grch37.fa -V raw_variants.vcf -ped family.ped -o phased_variants.vcf
+
+:question: **How many sites were not phased?** <!-- 10 variants -->
 
 ## Filter variants
 
 	java -jar $GATK -T VariantFiltration -R grch37.fa -V phased_variants.vcf --filterExpression "DP < 10 || QD < 2.0 || FS > 60.0 || MQ < 40.0" --filterName "BIOS201_FILTER" -o flagged_snps.vcf 
 
+:question: **What do the above filters do?** <!-- DP filters out sites with low depth; QD filters out variants with low confidence; FS filters out variants with extreme strand bias; MQ filters out sites where the supporting reads had generally poor mapping qualities -->
+
 	java -jar $GATK -R grch37.fa -T SelectVariants -V flagged_snps.vcf -o filtered_snps.vcf -o -selectType SNP -ef --restrictAllelesTo BIALLELIC
+
+:question: **How many variants are in the filtered VCF file?** <!-- 134 variants -->
+:question: **For the variant at 17:41204377, what is the ref allele and alt allele?** <!-- chr17:g.41204377A>G -->
+:question: **For the variant at 17:41204377, how many of the individuals were heterozygous?** <!-- 2 -->
+:question: **For the variant at 17:41204377, how many reads supported the ref allele? the alt allele?** <!-- 28, 24 -->
 
 ## Compare variants to platinum genomes
 
