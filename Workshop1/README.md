@@ -59,8 +59,8 @@ If the response is `bash`, download and run the following file:
 
 Finally, create a directory to work in and `cd` into it:
 
-	mkdir workshop1
-	cp /afs/ir/class/bios201/workshop1 .
+	cp -r /afs/ir/class/bios201/workshop1/ .
+	cd workshop1
 
 ## Sequencing quality control with FASTQC
 
