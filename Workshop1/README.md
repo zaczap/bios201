@@ -28,7 +28,6 @@ After going through this exercise, you will have done the following:
 
 - [ ] Run `fastqc` on FASTQ files to assess sequencing quality
 - [ ] Run `cutadapt` to remove adapters, trim reads, and filter short reads
-- [ ] Index a reference genome with `bwa`
 - [ ] Align paired-end reads to your indexed genome using `bwa mem`
 - [ ] Inspect alignment results with `samtools flagstat`
 - [ ] Mark PCR duplicates in the aligned reads (Picard tools)
