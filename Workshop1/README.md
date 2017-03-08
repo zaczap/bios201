@@ -20,7 +20,7 @@ The general workflow will look like this:
 	| FASTQ | --> | SAM/BAM | --> | VCF |
 	+-------+     +---------+     +-----+
 
-We are going to take raw sequencing reads, align the reads to the reference genome, and then call variants from the aligned reads. If you want to learn more about the main file formats we will be working with, the following pages provide information on [FASTQ](fastq_format.md), [SAM/BAM](sam_format.md), and [VCF](vcf_format.mt) formats.
+We are going to take raw sequencing reads, align the reads to the reference genome, and then call variants from the aligned reads. If you want to learn more about the main file formats we will be working with, the following pages provide information on [FASTQ](fastq_format.md), [SAM/BAM](sam_format.md), and [VCF](vcf_format.md) formats.
 
 ## Experimental goals
 
