@@ -2,36 +2,42 @@
 
 ## Introduction
 
-We've provided you with raw sequencing data (FASTQ format) for 3 individuals that were sequenced as part of the 1000 Genomes project: NA12878, NA12891, and NA12892. Each of these samples has two FASTQ files because the sequencing was done with paired-end reads (R1 and R2), and we've subsetted the FASTQ files to reads that pretty much exclusively from the _BRCA1_ locus on chromosome 17 (17:41196312-41277500 in GRCh37).
+In this exercise, we are going to _identify variants_ from DNA sequencing data for a few individuals. A variant (either a base substitution, a short insertion/deletion, or a larger structural variant like a duplication, deletion, translocation, etc.) is defined relative to a reference genome - today we will be working with the [GRCh37 assembly](https://www.ncbi.nlm.nih.gov/grc/human) of the human genome. We will essentially focus our analysis on single nucleotide polymorphisms (SNPs).
 
-- NA12878: NA12878_R1.fastq, NA12878_R2.fastq
-- NA12891: NA12891_R1.qc.trimmed.fastq, NA12891_R2.qc.trimmed.fastq
-- NA12892: NA12892_R1.qc.trimmed.fastq, NA12892_R2.qc.trimmed.fastq
+We have provided you with raw sequencing data in the FASTQ format for three individuals that were sequenced as part of the 1000 Genomes project ([NA12878](http://www.internationalgenome.org/data-portal/sample/NA12878), [NA12891](http://www.internationalgenome.org/data-portal/sample/NA12891), and [NA12892](http://www.internationalgenome.org/data-portal/sample/NA12892)). 
 
-Our goal is to take these reads, align them to the human reference (GRCh37), call variants following the GATK Best Practices pipeline as best as possible, and inspect variation in the _BRCA1_ locus in these individuals.
+These samples underwent _paired-end_ sequencing on genomic DNA, generating a pair of FASTQ files (R1 and R2) for each sample. We have subsetted the FASTQ files to reads that originate from the _BRCA1_ locus on chromosome 17 (17:41196312-41277500):
 
-In the following workshop, you will learn to:
+- *NA12878*: NA12878_R1.fastq, NA12878_R2.fastq
+- *NA12891*: NA12891_R1.qc.trimmed.fastq, NA12891_R2.qc.trimmed.fastq
+- *NA12892*: NA12892_R1.qc.trimmed.fastq, NA12892_R2.qc.trimmed.fastq
 
-- Run `fastqc` on FASTQ files to assess sequencing quality
-- Run `cutadapt` to remove adapters, trim reads, and filter short reads
-- Index a reference genome with `bwa`
-- Align paired-end reads to your indexed genome using `bwa mem`
-- Inspect alignment results with `samtools flagstat`
-- Mark PCR duplicates in the aligned reads (Picard tools)
-- Perform base quality recalibration on the aligned reads (GATK)
-- Call variants in individual samples (GATK)
-- Jointly call variants across samples (GATK)
-- Compare VCF files (in this case, to a gold-standard reference)
+We have already performed quality control (QC) on NA12891 and NA12892, but you will be responsible for cleaning up NA12878. Broadly we will be following the GATK Best Practices pipeline for calling variants from DNA sequencing data, though we will be skipping one step due to the small amount of data we are working with.
 
-## File formats we are working with
+The general workflow will look like this:
 
-	+-------+     +---------------+     +---------+     +-----+
-	| FASTQ | --> | Trimmed FASTQ | --> | SAM/BAM | --> | VCF |
-	+-------+     +---------------+     +---------+     +-----+
+	+-------+     +---------+     +-----+
+	| FASTQ | --> | SAM/BAM | --> | VCF |
+	+-------+     +---------+     +-----+
 
-* [FASTQ](fastq_format.md)
-* [SAM/BAM](sam_format.md)
-* [VCF](vcf_format.mt)
+We are going to take raw sequencing reads, align the reads to the reference genome, and then call variants from the aligned reads. If you want to learn more about the main file formats we will be working with, the following pages provide information on [FASTQ](fastq_format.md), [SAM/BAM](sam_format.md), and [VCF](vcf_format.mt) formats.
+
+## Experimental goals
+
+After going through this exercise, you will have done the following:
+
+- [ ] Run `fastqc` on FASTQ files to assess sequencing quality
+- [ ] Run `cutadapt` to remove adapters, trim reads, and filter short reads
+- [ ] Index a reference genome with `bwa`
+- [ ] Align paired-end reads to your indexed genome using `bwa mem`
+- [ ] Inspect alignment results with `samtools flagstat`
+- [ ] Mark PCR duplicates in the aligned reads (Picard tools)
+- [ ] Perform base quality recalibration on the aligned reads (GATK)
+- [ ] Call variants in individual samples (GATK)
+- [ ] Jointly call variants across samples (GATK)
+- [ ] Compare VCF files (in this case, to a gold-standard reference)
+
+While we have provided all the software for you on our teaching server, if you don't have access you can download the different software packages here: [fastqc](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [cutadapt](http://cutadapt.readthedocs.io/en/stable/index.html), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [Picard tools](https://broadinstitute.github.io/picard/), [GATK](https://software.broadinstitute.org/gatk/), [vcftools](http://www.htslib.org/).
 
 ## Setup
 
@@ -145,6 +151,8 @@ We can see how well the alignments were by running the following commands:
 	samtools flagstat NA12878.bam
 	samtools flagstat NA12891.bam
 	samtools flagstat NA12892.bam
+
+:question: *What percentage of reads for NA12878 were successfully mapped?*
 
 ## Marking PCR duplicates and performing base quality recalibration
 
