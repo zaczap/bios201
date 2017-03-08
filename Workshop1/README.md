@@ -256,7 +256,7 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 * :question: **How many variants are in the filtered VCF file?** 
 * :question: **For the variant at 17:41204377, what are the ref allele and alt alleles?** 
 * :question: **For the variant at 17:41204377, how many of the individuals were heterozygous?** 
-* :question: **For the variant at 17:41204377, how many reads supported the ref allele? the alt allele?** 
+* :question: **For the variant at 17:41204377, how many reads supported the ref allele for NA12878? the alt allele?** 
 
 <!-- 134 variants -->
 <!-- chr17:g.41204377A>G -->
