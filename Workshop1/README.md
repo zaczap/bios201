@@ -152,7 +152,7 @@ We can see how well the alignments were by running the following commands:
 	samtools flagstat NA12891.bam
 	samtools flagstat NA12892.bam
 
-:question: *What percentage of reads for NA12878 were successfully mapped?*
+:question: **What percentage of reads for NA12878 were successfully mapped?**
 
 ## Marking PCR duplicates and performing base quality recalibration
 
