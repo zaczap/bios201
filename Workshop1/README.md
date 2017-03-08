@@ -21,6 +21,57 @@ In the following workshop, you will learn to:
 - Perform base quality recalibration on the aligned reads (GATK)
 - Call variants in individual samples (GATK)
 - Jointly call variants across samples (GATK)
+- Compare VCF files (in this case, to a gold-standard reference)
+
+## File formats we are working with
+
+	+-------+     +---------------+     +---------+     +-----+
+	| FASTQ | --> | Trimmed FASTQ | --> | SAM/BAM | --> | VCF |
+	+-------+     +---------------+     +---------+     +-----+
+
+### FASTQ
+
+The fundamental next-generation sequencing data format is FASTQ - this is the raw data produced from a sequencing run on most common platforms. 
+
+Each read in a FASTQ file gets 4 lines - for example, the following 4 lines describe one read:
+
+	@HWI-D00360:6:H81VLADXX:1:1101:1245:2105 1:N:0:CGATGT
+	TTTTTTTCTGAGGCAAGTCCCACTCTCTTGCCCAGGCTGGAGTGCAGTAGTGTGACCTCGGCTCACTGCAACCTCCGTCCCCCAGGTTCAAGTGATTCTCCTGCCTTANCCTCCCAAGTNNCTGNGNTCACAGGNNNCCACCATCATG
+	+
+	@@@DDDDDD?DBFFF?GCFGEHIE@GGIIEGGIICBFEC<CGG;=B<FCDCDFE@DG:DA<EEEEE;(;>CCBCCB:9<BBBB9?7::ACCCD>@DDDCCC@@@BCC@#++<@BBCC<C##++8#+#+++8<C1###+++8@B@CAC:
+
+The first line, which begins with a `@` character, is a _header_ line that describes where the read came from: what machine, flow cell, etc. What goes here depends on what sequencing machine was used, but it is typically all of the information necessary to figure out where the read came from and to uniquely identify it amongst all other reads.
+
+The second line, which is arguably the most interesting line, contains the bases that were sequenced - it looks like DNA.
+
+The third line, which begins with `+` character, is often blank, and often just repeats the information in the header line otherwise.
+
+Finally, the fourth line contains the _quality scores_ for each of the bases that were sequenced. The encoding scheme is a little confusing, however. You can read all about it [here](https://en.wikipedia.org/wiki/Phred_quality_score) and [here](http://www.drive5.com/usearch/manual/quality_score.html), but basically, each character has a numeric value attached to it that is translated into an per-base accuracy. For example:
+
+	!	encodes a Phred quality score of 0 which ~= 0% accuracy
+	"	encodes a Phred quality score of 1 which ~= 21% inaccuracy
+	#	encodes a Phred quality score of 2 which ~= 37% inaccuracy
+	...
+	A	encodes a Phred quality score of 32 which ~= 99.937% inaccuracy
+	B	encodes a Phred quality score of 33 which ~= 99.95% inaccuracy
+	C	encodes a Phred quality score of 34 which ~= 99.96% inaccuracy
+	D	encodes a Phred quality score of 35 which ~= 99.968% inaccuracy
+	...
+
+The most important part is that you understand each base is sequenced with varying quality - intutitively you probably want to throw out (or trim) bad bases before continuing your experiment!
+
+### SAM/BAM
+
+When we align reads to a reference genome, we generated a _sequence alignment_ which we store in either plaintext (SAM) or binary (BAM) - these two file types are the same except one is human readable and larger on disk than the other other. An example line is given here:
+	
+	HWI-D00360:6:H81VLADXX:1:1101:13347:2151        2177    17      188091  5       73H59M16H       =       74713352        74525262        AAAAATATAAAACTTAGCTGGGCATGGTAGCACACACCTGTAGTCTCAGCTACTCAGGA     CEEEEBCCDEEC>::C:@>>??AC32144::@4?<@5<>>+:4+(4(>((4>>34@49A     NM:i:4  MD:Z:6T21G5T14A9        AS:i:39 XS:i:34 SA:Z:17,4264587,+,101M47S,5,7;  XA:Z:17,+73713822,102S34M12S,0;17,-19146648,12S43M93S,2;
+
+### VCF
+
+Variant call files contain information on variants observed (relative to a reference genome) in one or more samples. An short example is shown here:
+
+	#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  NA12878 NA12891 NA12892
+	17      41196408        .       G       A       1349.16 PASS    AC=2;AF=0.333;AN=6;BaseQRankSum=-6.450e-01;ClippingRankSum=0.00;DP=121;ExcessHet=3.9794;FS=0.881;MLEAC=2;MLEAF=0.333;MQ=60.00;MQRankSum=0.00;QD=16.06;ReadPosRankSum=-1.180e+00;SOR=0.909  GT:AD:DP:GQ:PL:TP       1|0:17,24:41:99:623,0,430:96    0|0:35,0:35:96:0,96,1440:96     1|0:18,25:43:99:758,0,510:96
 
 ## Setup
 
@@ -34,20 +85,16 @@ Once connected, run:
 
 If the response is `tcsh`, download and run the following file:
 
-	wget http://www.stanford.edu/~zappala/bios201/setup_tcsh.sh
-	source setup_tcsh.sh
+	source /afs/ir/class/bios201/setup/setup_tcsh.sh 
 
 If the response is `bash`, download and run the following file:
 
-	wget http://www.stanford.edu/~zappala/bios201/setup_bash.sh
-	source setup_bash.sh
+	source /afs/ir/class/bios201/setup/setup_bash.sh 
 
 Finally, create a directory to work in and `cd` into it:
 
 	mkdir workshop1
-	cd workshop1
-	wget http://www.stanford.edu/~zappala/bios201/workshop1.gz
-	gunzip workshop1
+	cp /afs/ir/class/bios201/workshop1 .
 
 ## Sequencing quality control with FASTQC
 
@@ -80,8 +127,8 @@ This should run pretty quickly. When it's done, let's go look at the results:
 
 You can see a `.html` file and a `.zip` file for each FASTQ file - if we download the `.html` files, we can look at them on our local computer to inspect the results from FASTQC. Normally you would need to download these files to your machine and open them, but we have made them available at the following URLs:
 
-- [NA12878_R1.fastq][http://www.stanford.edu/~zappala/bios201/NA12878_R1.html]
-- [NA12878_R2.fastq][http://www.stanford.edu/~zappala/bios201/NA12878_R2.html]
+- [NA12878_R1.fastq](http://www.stanford.edu/~zappala/bios201/NA12878_R1.html)
+- [NA12878_R2.fastq](http://www.stanford.edu/~zappala/bios201/NA12878_R2.html)
 
 ## Removing adapters, trimming reads, and filtering
 
@@ -111,6 +158,7 @@ Now we've removed adapters and trimmed low quality bases; we've also filtered ou
 
 We would like to take our reads (in FASTQ format) and figure out where they originated from in the human genome - this __alignment__ is accomplished using a tool called `bwa` (which stands for the Burrows-Wheeler aligner). We first need to __index__ the genome before it can be easily aligned to:
 
+	# You don't need to do this today! We did it for you already. 
 	bwa index grch37.fa
 
 **NOTE:** The genome FASTA file we have given you only includes chromosome 17.
@@ -164,7 +212,7 @@ Then we index these BAMs:
 
 And we perform base quality recalibration:
 
-	java -jar $PICARD CreateSequenceDictionary R=grch37.fa O=grch37.dict
+	java -jar $PICARD CreateSequenceDictionary R=grch37.fa O=grch37.dict # not necessary?
 	
 	java -jar $GATK -T BaseRecalibrator -R grch37.fa -I NA12878.markduplicates.rg.bam -knownSites knownSites.vcf -o NA12878.recal_data.table
 
@@ -178,6 +226,17 @@ And we perform base quality recalibration:
 
 	java -jar $GATK -T PrintReads -R grch37.fa -I NA12892.markduplicates.rg.bam -BQSR NA12892.recal_data.table -o NA12892.markduplicates.rg.bqsr.bam
 
+For what it's worth, you can avoid being so repetitious using a `for` loop:
+
+	for sample in NA12878 NA12891 NA12892
+	do
+		echo "Processing ${sample}..."
+
+		java -jar $GATK -T BaseRecalibrator -R grch37.fa -I ${sample}.markduplicates.rg.bam -knownSites knownSites.vcf -o ${sample}.recal_data.table
+
+		java -jar $GATK -T PrintReads -R grch37.fa -I ${sample}.markduplicates.rg.bam -BQSR ${sample}.recal_data.table -o ${sample}.markduplicates.rg.bqsr.bam
+	done
+
 ## Calling variants in individual samples
 
 	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller -I NA12878.markduplicates.rg.bqsr.bam --emitRefConfidence GVCF -o NA12878.g.vcf
@@ -187,6 +246,8 @@ And we perform base quality recalibration:
 	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller -I NA12892.markduplicates.rg.bqsr.bam --emitRefConfidence GVCF -o NA12892.g.vcf
 
 ## Joint calling across samples
+
+Calling variants in a single individual is _not_ always ideal, however - we have more confidence in observing a particular variant at a given site if we see it in other individuals (because we have greater confidence that it is a real site rather than some artifact or a sequencing error).
 
 	time java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa --variant NA12878.g.vcf --variant NA12891.g.vcf  --variant NA12892.g.vcf -o raw_variants.vcf
 
@@ -202,9 +263,13 @@ And we perform base quality recalibration:
 
 ## Compare variants to platinum genomes
 
-	vcftools --vcf filtered_snps.vcf --diff platinum_trio.vcf --diff-indv-discordance  --out compare
+	vcftools --vcf raw_variants.vcf --diff platinum_trio.vcf --diff-indv-discordance  --out raw_to_platinum_comparison
 
-	more compare.diff.indv 
+	vcftools --vcf filtered_snps.vcf --diff platinum_trio.vcf --diff-indv-discordance  --out filtered_to_platinum_comparison
+
+	more raw_to_platinum_comparison.diff.indv 
+	more filtered_to_platinum_comparison.diff.indv 
+
 <!-- INDV    N_COMMON_CALLED N_DISCORD       DISCORDANCE
 NA12878 134     0       0
 NA12891 134     0       0
