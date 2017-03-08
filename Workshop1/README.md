@@ -270,9 +270,9 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 	more raw_to_platinum_comparison.diff.indv 
 	more filtered_to_platinum_comparison.diff.indv 
 
-* **How many variants were called for NA12892 in the raw VCF:question:**
-* **How many of those were wrong (compared to the platinum genomes):question:** 
-* **How did the results change after filtering:question:**
+* :question: **How many variants were called for NA12892 in the raw VCF?**
+* :question: **How many of those were wrong (compared to the platinum genomes)?** 
+* :question: **How did the results change after filtering?**
 
 <!-- 196 -->
 <!-- 4 -->
