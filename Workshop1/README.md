@@ -50,15 +50,15 @@ Once connected, run:
 
 	echo $SHELL
 
-If the response is `tcsh`, download and run the following file:
+If the response is `tcsh`, run the following command:
 
 	source /afs/ir/class/bios201/setup/setup_tcsh.sh 
 
-If the response is `bash`, download and run the following file:
+If the response is `bash`, run the following command:
 
 	source /afs/ir/class/bios201/setup/setup_bash.sh 
 
-Finally, create a directory to work in and `cd` into it:
+Finally, copy the workshop materials and `cd` into it (**NOTE**: copying the materials may take a minute or two):
 
 	cp -r /afs/ir/class/bios201/workshop1/ .
 	cd workshop1
@@ -74,8 +74,6 @@ When working with sequencing data, you want to make sure your reads do not have 
 	# <adapter_file> is the name of a tab-delimited file that lists the adapters for each sample
 	# <r1_fastq> is the first set of reads
 	# <r2_fastq> is the second set of reads 
-
-**NOTE:** We need to create __<output_dir>__ before we can supply it to `fastqc`.
 
 **NOTE:** We are only going to perform QC on NA12878; the other samples are already QC'ed and trimmed.
 
@@ -97,9 +95,9 @@ You can see a `.html` file and a `.zip` file for each FASTQ file - if we downloa
 - [NA12878_R1.html](http://web.stanford.edu/class/bios201/NA12878_R1_fastqc.html)
 - [NA12878_R2.html](http://web.stanford.edu/class/bios201/NA12878_R2_fastqc.html)
 
-The FASTQC files can help you diagnose various issues you may have had - we will just consider adapter contamination and trimming low-quality bases today.
+The FASTQC files can help you diagnose various issues you may have had - we will just consider adapter contamination and trimming low-quality bases today. To understand what all of the different FASTQC results mean, [visit this page](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/).
 
-* :question: **What happens to the quality of sequenced bases in later cycles?**
+:question: **What happens to the quality of sequenced bases in later cycles?**
 
 <!-- The qualities drop off in the latter cycles -->
 
@@ -125,7 +123,7 @@ So let's run the actual command:
 
 	cutadapt -q 10 --minimum-length 30 -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC  -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT -o NA12878_R1.qc.trimmed.fastq -p NA12878_R2.qc.trimmed.fastq NA12878_R1.fastq NA12878_R2.fastq
 
-* :question: **How many read pairs were there before/after trimming?**
+:question: **How many read pairs were there before/after trimming?**
 
 <!-- before: 10,844, after: 10,336 -->
 
@@ -163,7 +161,7 @@ We can see how well the alignments were by running the following commands:
 	samtools flagstat NA12891.bam
 	samtools flagstat NA12892.bam
 
-* :question: **What percentage of reads for NA12878 were successfully mapped?**
+:question: **What percentage of reads for NA12878 were successfully mapped?**
 
 <!-- 93.86% -->
 
@@ -232,7 +230,7 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 
 	time java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa --variant NA12878.g.vcf --variant NA12891.g.vcf  --variant NA12892.g.vcf -o raw_variants.vcf
 
-* :question: **How many variants are in the joint VCF file?** (_Hint_: Run vcftools on `raw_variants.vcf`.) 
+:question: **How many variants are in the joint VCF file?** (_Hint_: Run vcftools on `raw_variants.vcf`.) 
 
 <!-- 201 sites -->
 
@@ -240,7 +238,7 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 
 	java -jar $GATK -T PhaseByTransmission -R grch37.fa -V raw_variants.vcf -ped family.ped -o phased_variants.vcf
 
-* :question: **How many sites were not phased?** 
+:question: **How many sites were not phased?** 
 
 <!-- 10 variants -->
 
@@ -248,16 +246,16 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 
 	java -jar $GATK -T VariantFiltration -R grch37.fa -V phased_variants.vcf --filterExpression "DP < 10 || QD < 2.0 || FS > 60.0 || MQ < 40.0" --filterName "BIOS201_FILTER" -o flagged_snps.vcf 
 
-* :question: **What do the above filters do?** 
+:question: **What do the above filters do?** 
 
 <!-- DP filters out sites with low depth; QD filters out variants with low confidence; FS filters out variants with extreme strand bias; MQ filters out sites where the supporting reads had generally poor mapping qualities -->
 
 	java -jar $GATK -R grch37.fa -T SelectVariants -V flagged_snps.vcf -o filtered_snps.vcf -o -selectType SNP -ef --restrictAllelesTo BIALLELIC
 
-* :question: **How many variants are in the filtered VCF file?** 
-* :question: **For the variant at 17:41204377, what are the ref allele and alt alleles?** 
-* :question: **For the variant at 17:41204377, how many of the individuals were heterozygous?** 
-* :question: **For the variant at 17:41204377, how many reads supported the ref allele for NA12878? the alt allele?** 
+:question: **How many variants are in the filtered VCF file?**   
+:question: **For the variant at 17:41204377, what are the ref allele and alt alleles?**   
+:question: **For the variant at 17:41204377, how many of the individuals were heterozygous?**   
+:question: **For the variant at 17:41204377, how many reads supported the ref allele for NA12878? the alt allele?**   
 
 <!-- 134 variants -->
 <!-- chr17:g.41204377A>G -->
@@ -273,9 +271,9 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 	more raw_to_platinum_comparison.diff.indv 
 	more filtered_to_platinum_comparison.diff.indv 
 
-* :question: **How many variants were called for NA12892 in the raw VCF?**
-* :question: **How many of those were wrong (compared to the platinum genomes)?** 
-* :question: **How did the results change after filtering?**
+:question: **How many variants were called for NA12892 in the raw VCF?**   
+:question: **How many of those were wrong (compared to the platinum genomes)?**    
+:question: **How did the results change after filtering?**   
 
 <!-- 196 -->
 <!-- 4 -->
