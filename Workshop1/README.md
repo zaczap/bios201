@@ -62,6 +62,17 @@ Finally, copy the workshop materials and `cd` into it (**NOTE**: copying the mat
 	cp -r /afs/ir/class/bios201/workshop1/ .
 	cd workshop1
 
+## Where we are starting from
+
+If you haven't worked with FASTQ files before, it is worth it to take a look at one and see what the data looks like:
+
+	head -8 NA12878_R1.fastq
+	head -8 NA12878_R2.fastq
+
+:question: **Of the 4 reads you just looked at, did you see any obvious problems?**
+
+<!-- The first one in R2 is BAD -->
+
 ## Sequencing quality control with FASTQC
 
 When working with sequencing data, you want to make sure your reads do not have systemic biases, adapter contamination, and are of generally good quality. The tool FASTQC can help assess these artifacts in your sequencing files, and is fairly easy to run. First let's look at the required input:
@@ -169,6 +180,7 @@ Let's do that for each of our samples (normally this can take some time, but we 
 
 We can see various statistics about each of the alignments by running the following commands:
 
+	# to learn about samtools, run: man samtools
 	samtools flagstat NA12878.bam
 	samtools flagstat NA12891.bam
 	samtools flagstat NA12892.bam
@@ -184,6 +196,10 @@ When we call variants, we want to make sure we have good evidence that the alter
 We use a tool here called Picard which is a piece of software with many useful functions that you can learn about [here](https://broadinstitute.github.io/picard/) or by running the help command:
 
 	java -Xmx2g -jar $PICARD
+
+You can also learn more about GATK, the tool we will use to calibrate variants and call variants, by running the help command:
+
+	java -jar $GATK --help
 
 You can mark duplicates in your BAM files like so:
 
