@@ -167,7 +167,7 @@ Let's do that for each of our samples (normally this can take some time, but we 
 	bwa mem grch37.fa NA12892_R1.qc.trimmed.fastq NA12892_R2.qc.trimmed.fastq \
 		| samtools sort --output-fmt BAM > NA12892.bam
 
-We can see how well the alignments were by running the following commands:
+We can see various statistics about each of the alignments by running the following commands:
 
 	samtools flagstat NA12878.bam
 	samtools flagstat NA12891.bam
