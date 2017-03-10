@@ -276,7 +276,7 @@ MQ filters out sites where the supporting reads had generally poor mapping quali
 
 In the previous step, we produced a VCF of variants that we would like to remove from our original VCF. We can remove them like so:
 
-	java -jar $GATK -R grch37.fa -T SelectVariants -V flagged_snps.vcf -o filtered_snps.vcf -o -selectType SNP -ef --restrictAllelesTo BIALLELIC
+	java -jar $GATK -R grch37.fa -T SelectVariants -V flagged_snps.vcf -o filtered_snps.vcf -selectType SNP -ef --restrictAllelesTo BIALLELIC
 
 Look over this file in order to answer the following questions:
 
