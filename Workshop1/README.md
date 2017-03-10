@@ -14,13 +14,11 @@ NA12878 | NA12878_R1.fastq | NA12878_R2.fastq
 NA12891 | NA12891_R1.qc.trimmed.fastq | NA12891_R2.qc.trimmed.fastq
 NA12892 | NA12892_R1.qc.trimmed.fastq | NA12892_R2.qc.trimmed.fastq
 
-We have already performed quality control (QC) on NA12891 and NA12892, but you will be responsible for cleaning up NA12878. Broadly we will be following the GATK Best Practices pipeline for calling variants from DNA sequencing data, though we will be skipping one step due to the small amount of data we are working with.
+We have already performed quality control (QC) on NA12891 and NA12892, but you will be responsible for cleaning up NA12878. Broadly we will be following the [GATK Best Practices pipeline](https://software.broadinstitute.org/gatk/best-practices/bp_3step.php?case=GermShortWGS) for calling variants from DNA sequencing data, though we will be skipping one step due to the small amount of data we are working with.
 
 The general workflow will look like this:
 
-	+-------+     +---------+     +-----+
-	| FASTQ | --> | SAM/BAM | --> | VCF |
-	+-------+     +---------+     +-----+
+![GATK workflow](https://software.broadinstitute.org/gatk/img/BP_workflow_3.6.png)
 
 We are going to take raw sequencing reads, align the reads to the reference genome, and then call variants from the aligned reads. If you want to learn more about the main file formats we will be working with, the following pages provide information on [FASTQ](fastq_format.md), [SAM/BAM](sam_format.md), and [VCF](vcf_format.md) formats.
 
@@ -38,13 +36,14 @@ After going through this exercise, you will have done the following:
 - [ ] Jointly call variants across samples (GATK)
 - [ ] Compare VCF files (in this case, to a gold-standard reference)
 
-While we have provided all the software for you on our teaching server, if you don't have access you can download the different software packages here: [fastqc](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [cutadapt](http://cutadapt.readthedocs.io/en/stable/index.html), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [Picard tools](https://broadinstitute.github.io/picard/), [GATK](https://software.broadinstitute.org/gatk/), [vcftools](http://www.htslib.org/).
+While we have provided all the software for you on our teaching server, you may want to download all of this software on your in the future: [fastqc](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [cutadapt](http://cutadapt.readthedocs.io/en/stable/index.html), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [Picard tools](https://broadinstitute.github.io/picard/), [GATK](https://software.broadinstitute.org/gatk/), [vcftools](http://www.htslib.org/).
 
 ## Setup
 
 First you will have to connect to the server we have set up for you:
 
 	ssh <sunetID>@corn.stanford.edu
+	# e.g. ssh zappala@corn.stanford.edu
 
 Once connected, run:
 
@@ -65,26 +64,24 @@ Finally, copy the workshop materials and `cd` into it (**NOTE**: copying the mat
 
 ## Sequencing quality control with FASTQC
 
-When working with sequencing data, you want to make sure your reads do not have systemic biases, adapter contamination, and are of generally good quality. The tool FASTQC can help assess these artifacts in your sequencing files, and is fairly easy to run:
+When working with sequencing data, you want to make sure your reads do not have systemic biases, adapter contamination, and are of generally good quality. The tool FASTQC can help assess these artifacts in your sequencing files, and is fairly easy to run. First let's look at the required input:
 
-	fastqc --outdir <output_dir> --format <format> --adapters <adapter_file> <r1_fastq> <r2_fastq>
+	fastqc --help
+
+Often you will have the ability to run `--help` in order to learn what a command does. The relevant highlights for the `fastqc` command are summarized here:
+
+	fastqc --outdir <output_dir> --format <format> <r1_fastq> <r2_fastq>
 
 	# <output_dir> is the name of a folder where you want the results written
 	# <format> is the format of the sequencing reads (optional)
-	# <adapter_file> is the name of a tab-delimited file that lists the adapters for each sample
 	# <r1_fastq> is the first set of reads
 	# <r2_fastq> is the second set of reads 
 
 **NOTE:** We are only going to perform QC on NA12878; the other samples are already QC'ed and trimmed.
 
-Let's take a quick look at the `adapters.txt` file:
-
-	# Inspect adapters.txt
-	cat adapters.txt
-
 And now let's run FASTQC:
 
-	fastqc --outdir fastqc --format fastq --adapters adapters.txt NA12878_R1.fastq NA12878_R2.fastq
+	fastqc --outdir fastqc --format fastq NA12878_R1.fastq NA12878_R2.fastq
 
 This should run pretty quickly. When it's done, let's go look at the results:
 
@@ -97,13 +94,19 @@ You can see a `.html` file and a `.zip` file for each FASTQ file - if we downloa
 
 The FASTQC files can help you diagnose various issues you may have had - we will just consider adapter contamination and trimming low-quality bases today. To understand what all of the different FASTQC results mean, [visit this page](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/).
 
-:question: **What happens to the quality of sequenced bases in later cycles?**
+:question: **What happens to the quality of sequenced bases in later cycles?**   
+:question: **Do you see some adapter contamination in the data?**   
 
 <!-- The qualities drop off in the latter cycles -->
+<!-- Towards the end of the reads yes -->
 
 ## Removing adapters, trimming reads, and filtering
 
 From the FASTQC results, you can see a little bit of adapter contamination as well a tell-tale drop off in sequencing quality towards the end of the reads. We can remove adapter contamination and trim these low-quality bases using the tool `cutadapt`:
+
+	cutadapt --help
+
+The relevant fields for us right now are here:
 
 	cutadapt -q <minimum_quality> --minimum-length <minimum_length>
 		-a <adapter on first read>
@@ -119,7 +122,7 @@ From the FASTQC results, you can see a little bit of adapter contamination as we
 	# <r1_fastq> is the first set of reads
 	# <r2_fastq> is the second set of reads 
 
-So let's run the actual command:
+So let's run the actual command (**Hint**: You can copy and paste these code segments instead of typing them):
 
 	cutadapt -q 10 --minimum-length 30 -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC  -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT -o NA12878_R1.qc.trimmed.fastq -p NA12878_R2.qc.trimmed.fastq NA12878_R1.fastq NA12878_R2.fastq
 
@@ -131,9 +134,15 @@ Now we've removed adapters and trimmed low quality bases; we've also filtered ou
 
 ## Aligning paired-end DNA sequencing data to the human genome
 
-We would like to take our reads (in FASTQ format) and figure out where they originated from in the human genome - this __alignment__ is accomplished using a tool called `bwa` (which stands for the Burrows-Wheeler aligner). We first need to __index__ the genome before it can be easily aligned to:
+We would like to take our reads (in FASTQ format) and figure out where they originated from in the human genome - this __alignment__ is accomplished using a tool called `bwa` (which stands for the Burrows-Wheeler aligner). To learn a little bit about what `bwa` is capable of, run:
 
-	# You don't need to do this today! We did it for you already. 
+	bwa
+
+We first need to __index__ the genome before it can be easily aligned to:
+
+	# You don't need to do this today! 
+	# We did it for you already.
+	# It would take ~5 minutes (longer on a full genome).
 	bwa index grch37.fa
 
 **NOTE:** The genome FASTA file we have given you only includes chromosome 17.
@@ -149,11 +158,14 @@ Now we can align reads using the following command:
 
 Let's do that for each of our samples (normally this can take some time, but we have only given you a small set of reads):
 
-	bwa mem grch37.fa NA12878_R1.qc.trimmed.fastq NA12878_R2.qc.trimmed.fastq | samtools sort --output-fmt BAM > NA12878.bam
+	bwa mem grch37.fa NA12878_R1.qc.trimmed.fastq NA12878_R2.qc.trimmed.fastq \
+		| samtools sort --output-fmt BAM > NA12878.bam
 
-	bwa mem grch37.fa NA12891_R1.qc.trimmed.fastq NA12891_R2.qc.trimmed.fastq | samtools sort --output-fmt BAM > NA12891.bam
+	bwa mem grch37.fa NA12891_R1.qc.trimmed.fastq NA12891_R2.qc.trimmed.fastq \
+		| samtools sort --output-fmt BAM > NA12891.bam
 
-	bwa mem grch37.fa NA12892_R1.qc.trimmed.fastq NA12892_R2.qc.trimmed.fastq | samtools sort --output-fmt BAM > NA12892.bam
+	bwa mem grch37.fa NA12892_R1.qc.trimmed.fastq NA12892_R2.qc.trimmed.fastq \
+		| samtools sort --output-fmt BAM > NA12892.bam
 
 We can see how well the alignments were by running the following commands:
 
@@ -167,7 +179,13 @@ We can see how well the alignments were by running the following commands:
 
 ## Marking PCR duplicates and performing base quality recalibration
 
-First we mark duplicates:
+When we call variants, we want to make sure we have good evidence that the alternate allele exists and isn't noise. If PCR duplicates are present, we may artificially think that we have a lot of evidence for an alternate allele that is really just the original same DNA fragment that has been over-amplified. We also want to take into account the quality which which each base was sequenced, since a low quality base should intuitively be poor evidence for a variant but a high quality base is good evidence.
+
+We use a tool here called Picard which is a piece of software with many useful functions that you can learn about [here](https://broadinstitute.github.io/picard/) or by running the help command:
+
+	java -Xmx2g -jar $PICARD
+
+You can mark duplicates in your BAM files like so:
 
 	java -Xmx2g -jar $PICARD MarkDuplicates INPUT=NA12878.bam OUTPUT=NA12878.markduplicates.bam METRICS_FILE=NA12878.markduplicates.metrics.txt OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 CREATE_INDEX=true TMP_DIR=/tmp
 
@@ -175,21 +193,17 @@ First we mark duplicates:
 
 	java -Xmx2g -jar $PICARD MarkDuplicates INPUT=NA12892.bam OUTPUT=NA12892.markduplicates.bam METRICS_FILE=NA12892.markduplicates.metrics.txt OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 CREATE_INDEX=true TMP_DIR=/tmp
 
-Then we add read groups, because those were missing but are required by GATK:
+We also need to add read groups. These are somewhat hard to define (see discussions [here](https://software.broadinstitute.org/gatk/guide/article?id=6472)), but are **required** by GATK. Again, we can do this using Picard:
 
-	java -jar $PICARD AddOrReplaceReadGroups I=NA12878.markduplicates.bam O=NA12878.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12878
+	java -jar $PICARD AddOrReplaceReadGroups I=NA12878.markduplicates.bam O=NA12878.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12878 SORT_ORDER=coordinate CREATE_INDEX=True
 
-	java -jar $PICARD AddOrReplaceReadGroups I=NA12891.markduplicates.bam O=NA12891.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12891
+	java -jar $PICARD AddOrReplaceReadGroups I=NA12891.markduplicates.bam O=NA12891.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12891 SORT_ORDER=coordinate CREATE_INDEX=True
 
-	java -jar $PICARD AddOrReplaceReadGroups I=NA12892.markduplicates.bam O=NA12892.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12892
+	java -jar $PICARD AddOrReplaceReadGroups I=NA12892.markduplicates.bam O=NA12892.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12892 SORT_ORDER=coordinate CREATE_INDEX=True
 
-Then we index these BAMs:
+Finally, we perform base quality recalibration (BQSR). From the author's of GATK:
 
-	samtools index NA12878.markduplicates.rg.bam
-	samtools index NA12891.markduplicates.rg.bam
-	samtools index NA12892.markduplicates.rg.bam
-
-And we perform base quality recalibration:
+> In a nutshell, [BQRS] is a data pre-processing step that detects systematic errors made by the sequencer when it estimates the quality score of each base call.
 
 <!--java -jar $PICARD CreateSequenceDictionary R=grch37.fa O=grch37.dict # not necessary?-->
 	
@@ -199,24 +213,17 @@ And we perform base quality recalibration:
 
 	java -jar $GATK -T BaseRecalibrator -R grch37.fa -I NA12892.markduplicates.rg.bam -knownSites knownSites.vcf -o NA12892.recal_data.table
 
+We then just print out a recalibrated BAM like so:
+
 	java -jar $GATK -T PrintReads -R grch37.fa -I NA12878.markduplicates.rg.bam -BQSR NA12878.recal_data.table -o NA12878.markduplicates.rg.bqsr.bam
 
 	java -jar $GATK -T PrintReads -R grch37.fa -I NA12891.markduplicates.rg.bam -BQSR NA12891.recal_data.table -o NA12891.markduplicates.rg.bqsr.bam
 
 	java -jar $GATK -T PrintReads -R grch37.fa -I NA12892.markduplicates.rg.bam -BQSR NA12892.recal_data.table -o NA12892.markduplicates.rg.bqsr.bam
 
-For what it's worth, you can avoid being so repetitious using a `for` loop:
-
-	for sample in NA12878 NA12891 NA12892
-	do
-		echo "Processing ${sample}..."
-
-		java -jar $GATK -T BaseRecalibrator -R grch37.fa -I ${sample}.markduplicates.rg.bam -knownSites knownSites.vcf -o ${sample}.recal_data.table
-
-		java -jar $GATK -T PrintReads -R grch37.fa -I ${sample}.markduplicates.rg.bam -BQSR ${sample}.recal_data.table -o ${sample}.markduplicates.rg.bqsr.bam
-	done
-
 ## Calling variants in individual samples
+
+We have been following the GATK Best Practices pipeline for calling germline variants from DNA sequencing data.
 
 	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller -I NA12878.markduplicates.rg.bqsr.bam --emitRefConfidence GVCF -o NA12878.g.vcf
 
@@ -230,7 +237,7 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 
 	time java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa --variant NA12878.g.vcf --variant NA12891.g.vcf  --variant NA12892.g.vcf -o raw_variants.vcf
 
-:question: **How many variants are in the joint VCF file?** (_Hint_: Run vcftools on `raw_variants.vcf`.) 
+:question: **How many variants are in the joint VCF file?** (**Hint**: Run vcftools on `raw_variants.vcf`.) 
 
 <!-- 201 sites -->
 
