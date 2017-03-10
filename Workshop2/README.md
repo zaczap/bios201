@@ -31,7 +31,7 @@ Goals
 
 Setup
 -----
-Follow the setup steps outlined in Workshop 1.
+Follow the setup steps outlined in the first workshop.
 Then copy the workshop materials and `cd` into the copied directory.
 
 Spliced Alignment and read counting
