@@ -10,9 +10,9 @@ These samples underwent _paired-end_ sequencing on genomic DNA, generating a pai
 
 Sample | Read 1 | Read 2
 -------|--------|--------
-*NA12878* | NA12878_R1.fastq | NA12878_R2.fastq
-*NA12891* | NA12891_R1.qc.trimmed.fastq | NA12891_R2.qc.trimmed.fastq
-*NA12892* | NA12892_R1.qc.trimmed.fastq | NA12892_R2.qc.trimmed.fastq
+NA12878 | NA12878_R1.fastq | NA12878_R2.fastq
+NA12891 | NA12891_R1.qc.trimmed.fastq | NA12891_R2.qc.trimmed.fastq
+NA12892 | NA12892_R1.qc.trimmed.fastq | NA12892_R2.qc.trimmed.fastq
 
 We have already performed quality control (QC) on NA12891 and NA12892, but you will be responsible for cleaning up NA12878. Broadly we will be following the GATK Best Practices pipeline for calling variants from DNA sequencing data, though we will be skipping one step due to the small amount of data we are working with.
 
