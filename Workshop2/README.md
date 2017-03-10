@@ -26,4 +26,19 @@ There are a few other differences between the genome builds that you can read ab
 [here](https://wiki.dnanexus.com/Scientific-Notes/human-genome) if you are
 interested. 
 
- 
+Goals
+-----
+
+Setup
+-----
+Follow the setup steps outlined in Workshop 1.
+Then copy the workshop materials and `cd` into the copied directory.
+
+Spliced Alignment and read counting
+-----------------------------------
+
+Understanding SAM/BAM format
+----------------------------
+
+Visualizing alignments with IGV
+-------------------------------
