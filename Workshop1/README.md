@@ -14,11 +14,11 @@ NA12878 | NA12878_R1.fastq | NA12878_R2.fastq
 NA12891 | NA12891_R1.qc.trimmed.fastq | NA12891_R2.qc.trimmed.fastq
 NA12892 | NA12892_R1.qc.trimmed.fastq | NA12892_R2.qc.trimmed.fastq
 
-We have already performed quality control (QC) on NA12891 and NA12892, but you will be responsible for cleaning up NA12878. Broadly we will be following the [GATK Best Practices pipeline](https://software.broadinstitute.org/gatk/best-practices/bp_3step.php?case=GermShortWGS) for calling variants from DNA sequencing data, though we will be skipping one step due to the small amount of data we are working with.
+We have already performed quality control (QC) on NA12891 and NA12892, but you will be responsible for cleaning up NA12878. Broadly we will be following the [GATK Best Practices pipeline](https://software.broadinstitute.org/gatk/best-practices/bp_3step.php?case=GermShortWGS) for calling variants from DNA sequencing data, though we will be skipping one step due to the small amount of data we are working with (we are skipping variant quality score recalibration, or VQSR).
 
 The general workflow will look like this:
 
-![GATK workflow](https://software.broadinstitute.org/gatk/img/BP_workflow_3.6.png)
+![GATK workflow](https://software.broadinstitute.org/gatk/img/BP_workflow_3.6.png) 
 
 We are going to take raw sequencing reads, align the reads to the reference genome, and then call variants from the aligned reads. If you want to learn more about the main file formats we will be working with, the following pages provide information on [FASTQ](fastq_format.md), [SAM/BAM](sam_format.md), and [VCF](vcf_format.md) formats.
 
@@ -26,15 +26,15 @@ We are going to take raw sequencing reads, align the reads to the reference geno
 
 After going through this exercise, you will have done the following:
 
-- [ ] Run `fastqc` on FASTQ files to assess sequencing quality
-- [ ] Run `cutadapt` to remove adapters, trim reads, and filter short reads
-- [ ] Align paired-end reads to your indexed genome using `bwa mem`
-- [ ] Inspect alignment results with `samtools flagstat`
-- [ ] Mark PCR duplicates in the aligned reads (Picard tools)
-- [ ] Perform base quality recalibration on the aligned reads (GATK)
-- [ ] Call variants in individual samples (GATK)
-- [ ] Jointly call variants across samples (GATK)
-- [ ] Compare VCF files (in this case, to a gold-standard reference)
+- Run `fastqc` on FASTQ files to assess sequencing quality
+- Run `cutadapt` to remove adapters, trim reads, and filter short reads
+- Align paired-end reads to your indexed genome using `bwa mem`
+- Inspect alignment results with `samtools flagstat`
+- Mark PCR duplicates in the aligned reads (Picard tools)
+- Perform base quality recalibration on the aligned reads (GATK)
+- Call variants in individual samples (GATK)
+- Jointly call variants across samples (GATK)
+- Compare VCF files (in this case, to a gold-standard reference)
 
 While we have provided all the software for you on our teaching server, you may want to download all of this software on your in the future: [fastqc](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [cutadapt](http://cutadapt.readthedocs.io/en/stable/index.html), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [Picard tools](https://broadinstitute.github.io/picard/), [GATK](https://software.broadinstitute.org/gatk/), [vcftools](http://www.htslib.org/).
 
@@ -223,7 +223,7 @@ We then just print out a recalibrated BAM like so:
 
 ## Calling variants in individual samples
 
-We have been following the GATK Best Practices pipeline for calling germline variants from DNA sequencing data.
+We are going to perform variant calling in two stages: **(1)** in individual samples and **(2)** jointly across samples (n = 3). To perform variant calling in each of the samples, we will use the HaplotypeCaller tool in GATK:
 
 	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller -I NA12878.markduplicates.rg.bqsr.bam --emitRefConfidence GVCF -o NA12878.g.vcf
 
@@ -237,11 +237,19 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 
 	time java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa --variant NA12878.g.vcf --variant NA12891.g.vcf  --variant NA12892.g.vcf -o raw_variants.vcf
 
+After you call variants, take a look at the VCF file that was produced:
+
+	more raw_variants.vcf
+
 :question: **How many variants are in the joint VCF file?** (**Hint**: Run vcftools on `raw_variants.vcf`.) 
 
 <!-- 201 sites -->
 
-## Phasing within the trio
+## Genotype phasing - what is it?
+
+The DNA sequencing data you have been working with is pretty interesting because the three individuals are related: NA12878 is the daughter of NA12891 and NA12892. Because of this, we can try to _infer_ which parent particular variants come from (this is called _phasing_). Phasing is useful because it helps us link multiple variants on the same haplotype together (otherwise we don't know what alleles are inherited together).
+
+Here we will be _phasing by transmission_ with GATK:
 
 	java -jar $GATK -T PhaseByTransmission -R grch37.fa -V raw_variants.vcf -ped family.ped -o phased_variants.vcf
 
@@ -249,15 +257,28 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 
 <!-- 10 variants -->
 
-## Filter variants
+So we now have a bunch of variants that are phased in the trio...so what next? Typically we need to refine our variant calls using _variant quality score recalibration (VQSR)_, but that is impossible for us to with this data because we don't have enough sites to work with. [VQSR](http://gatkforums.broadinstitute.org/gatk/discussion/39/variant-quality-score-recalibration-vqsr) is a really interesting topic to learn more about.
+
+## Filtering our low-quality variants
+
+Given that we are skipping VQSR, there are still some things we can to clean up our variant calls - for instance, we can remove variants where there weren't many supporting reads, or the reads that mapped to that locus had generally poor mapping qualities, etc. 
 
 	java -jar $GATK -T VariantFiltration -R grch37.fa -V phased_variants.vcf --filterExpression "DP < 10 || QD < 2.0 || FS > 60.0 || MQ < 40.0" --filterName "BIOS201_FILTER" -o flagged_snps.vcf 
 
 :question: **What do the above filters do?** 
 
-<!-- DP filters out sites with low depth; QD filters out variants with low confidence; FS filters out variants with extreme strand bias; MQ filters out sites where the supporting reads had generally poor mapping qualities -->
+<!-- 
+DP filters out sites with low depth; 
+QD filters out variants with low confidence; 
+FS filters out variants with extreme strand bias; 
+MQ filters out sites where the supporting reads had generally poor mapping qualities 
+-->
+
+In the previous step, we produced a VCF of variants that we would like to remove from our original VCF. We can remove them like so:
 
 	java -jar $GATK -R grch37.fa -T SelectVariants -V flagged_snps.vcf -o filtered_snps.vcf -o -selectType SNP -ef --restrictAllelesTo BIALLELIC
+
+Look over this file in order to answer the following questions:
 
 :question: **How many variants are in the filtered VCF file?**   
 :question: **For the variant at 17:41204377, what are the ref allele and alt alleles?**   
@@ -270,6 +291,10 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 <!-- 28, 24 -->
 
 ## Compare variants to platinum genomes
+
+The last thing we are going to do is compare our results to a [gold standard](https://www.illumina.com/platinumgenomes.html) - these three individuals have been extensively sequenced, and their genotypes in the region we have been investigating are well known.
+
+One way to see how well we are doing is to compare the original VCF and the filtered VCF to the gold standard. We are interested in how many calls are _discordant_ between the two:
 
 	vcftools --vcf raw_variants.vcf --diff platinum_trio.vcf --diff-indv-discordance  --out raw_to_platinum_comparison
 
@@ -285,6 +310,7 @@ Calling variants in a single individual is _not_ always ideal, however - we have
 <!-- 196 -->
 <!-- 4 -->
 <!-- There was no measured discordance -->
+
 
 
 
