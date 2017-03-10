@@ -179,7 +179,7 @@ We can see how well the alignments were by running the following commands:
 
 ## Marking PCR duplicates and performing base quality recalibration
 
-When we call variants, we want to make sure we have good evidence that the alternate allele exists and isn't noise. If PCR duplicates are present, we may artificially think that we have a lot of evidence for an alternate allele that is really just the original same DNA fragment that has been over-amplified. We also want to take into account the quality which which each base was sequenced, since a low quality base should intuitively be poor evidence for a variant but a high quality base is good evidence.
+When we call variants, we want to make sure we have good evidence that the alternate allele exists and isn't noise. If PCR duplicates are present, we may artificially think that we have a lot of evidence for an alternate allele that is really just the original same DNA fragment that has been over-amplified. We also want to take into account the quality of sequencing for each base, since a low quality base should intuitively be poor evidence for a variant but a high quality base is good evidence.
 
 We use a tool here called Picard which is a piece of software with many useful functions that you can learn about [here](https://broadinstitute.github.io/picard/) or by running the help command:
 
@@ -201,9 +201,9 @@ We also need to add read groups. These are somewhat hard to define (see discussi
 
 	java -jar $PICARD AddOrReplaceReadGroups I=NA12892.markduplicates.bam O=NA12892.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12892 SORT_ORDER=coordinate CREATE_INDEX=True
 
-Finally, we perform base quality recalibration (BQSR). From the author's of GATK:
+Finally, we perform base quality recalibration (BQSR). From the authors of GATK:
 
-> In a nutshell, [BQRS] is a data pre-processing step that detects systematic errors made by the sequencer when it estimates the quality score of each base call.
+> In a nutshell, [BQSR] is a data pre-processing step that detects systematic errors made by the sequencer when it estimates the quality score of each base call.
 
 <!--java -jar $PICARD CreateSequenceDictionary R=grch37.fa O=grch37.dict # not necessary?-->
 	
@@ -261,7 +261,7 @@ So we now have a bunch of variants that are phased in the trio...so what next? T
 
 ## Filtering our low-quality variants
 
-Given that we are skipping VQSR, there are still some things we can to clean up our variant calls - for instance, we can remove variants where there weren't many supporting reads, or the reads that mapped to that locus had generally poor mapping qualities, etc. 
+Given that we are skipping VQSR, there are still some things we can do to clean up our variant calls - for instance, we can remove variants where there weren't many supporting reads, or the reads that mapped to that locus had generally poor mapping qualities, etc. 
 
 	java -jar $GATK -T VariantFiltration -R grch37.fa -V phased_variants.vcf --filterExpression "DP < 10 || QD < 2.0 || FS > 60.0 || MQ < 40.0" --filterName "BIOS201_FILTER" -o flagged_snps.vcf 
 
