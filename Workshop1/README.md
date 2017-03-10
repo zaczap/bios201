@@ -20,7 +20,7 @@ The general workflow will look like this:
 
 ![GATK workflow](https://software.broadinstitute.org/gatk/img/BP_workflow_3.6.png) 
 
-We are going to take raw sequencing reads, align the reads to the reference genome, and then call variants from the aligned reads. If you want to learn more about the main file formats we will be working with, the following pages provide information on [FASTQ](fastq_format.md), [SAM/BAM](sam_format.md), and [VCF](vcf_format.md) formats.
+We are going to take raw sequencing reads, align the reads to the reference genome, and then call variants from the aligned reads. If you want to learn more about the main file formats we will be working with, the following pages provide information on [FASTQ](https://en.wikipedia.org/wiki/FASTQ_format), [SAM/BAM](http://genome.sph.umich.edu/wiki/SAM), and [VCF](https://en.wikipedia.org/wiki/Variant_Call_Format) formats.
 
 ## Experimental goals
 
@@ -235,7 +235,7 @@ We are going to perform variant calling in two stages: **(1)** in individual sam
 
 Calling variants in a single individual is _not_ always ideal, however - we have more confidence in observing a particular variant at a given site if we see it in other individuals (because we have greater confidence that it is a real site rather than some artifact or a sequencing error).
 
-	time java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa --variant NA12878.g.vcf --variant NA12891.g.vcf  --variant NA12892.g.vcf -o raw_variants.vcf
+	java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa --variant NA12878.g.vcf --variant NA12891.g.vcf  --variant NA12892.g.vcf -o raw_variants.vcf
 
 After you call variants, take a look at the VCF file that was produced:
 
