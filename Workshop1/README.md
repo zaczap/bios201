@@ -92,8 +92,8 @@ This should run pretty quickly. When it's done, let's go look at the results:
 
 You can see a `.html` file and a `.zip` file for each FASTQ file - if we download the `.html` files, we can look at them on our local computer to inspect the results from FASTQC. Normally you would need to download these files to your machine and open them, but we have made them available at the following URLs:
 
-- [NA12878_R1.fastq](http://www.stanford.edu/~zappala/bios201/NA12878_R1.html)
-- [NA12878_R2.fastq](http://www.stanford.edu/~zappala/bios201/NA12878_R2.html)
+- [NA12878_R1.html](http://web.stanford.edu/class/bios201/NA12878_R1_fastqc.html)
+- [NA12878_R2.html](http://web.stanford.edu/class/bios201/NA12878_R2_fastqc.html)
 
 The FASTQC files can help you diagnose various issues you may have had - we will just consider adapter contamination and trimming low-quality bases today.
 
