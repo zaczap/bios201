@@ -22,7 +22,7 @@ The general workflow will look like this:
 
 We are going to take raw sequencing reads, align the reads to the reference genome, and then call variants from the aligned reads. If you want to learn more about the main file formats we will be working with, the following pages provide information on [FASTQ](https://en.wikipedia.org/wiki/FASTQ_format), [SAM/BAM](http://genome.sph.umich.edu/wiki/SAM), and [VCF](https://en.wikipedia.org/wiki/Variant_Call_Format) formats.
 
-## Experimental goals
+## Goals
 
 After going through this exercise, you will have done the following:
 
@@ -36,7 +36,7 @@ After going through this exercise, you will have done the following:
 - Jointly call variants across samples (GATK)
 - Compare VCF files (in this case, to a gold-standard reference)
 
-While we have provided all the software for you on our teaching server, you may want to download all of this software on your in the future: [fastqc](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [cutadapt](http://cutadapt.readthedocs.io/en/stable/index.html), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [Picard tools](https://broadinstitute.github.io/picard/), [GATK](https://software.broadinstitute.org/gatk/), [vcftools](http://www.htslib.org/).
+While we have provided all the software for you on our teaching server, you may want to download all of this software on your computer in the future: [fastqc](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/), [cutadapt](http://cutadapt.readthedocs.io/en/stable/index.html), [bwa](http://bio-bwa.sourceforge.net/), [samtools](http://www.htslib.org/), [Picard tools](https://broadinstitute.github.io/picard/), [GATK](https://software.broadinstitute.org/gatk/), [vcftools](http://www.htslib.org/).
 
 ## Setup
 
@@ -62,13 +62,24 @@ Finally, copy the workshop materials and `cd` into it (**NOTE**: copying the mat
 	cp -r /afs/ir/class/bios201/workshop1/ .
 	cd workshop1
 
+## Where we are starting from
+
+If you haven't worked with [FASTQ](https://en.wikipedia.org/wiki/FASTQ_format) files before, it is worth it to take a look at a couple and see what the data look like:
+
+	head -8 NA12878_R1.fastq
+	head -8 NA12878_R2.fastq
+
+:question: **Of the 4 reads you just looked at, did you see any obvious problems?**
+
+<!-- The first one in R2 is BAD -->
+
 ## Sequencing quality control with FASTQC
 
-When working with sequencing data, you want to make sure your reads do not have systemic biases, adapter contamination, and are of generally good quality. The tool FASTQC can help assess these artifacts in your sequencing files, and is fairly easy to run. First let's look at the required input:
+When working with sequencing data, you want to make sure your reads do not have systematic biases or adapter contamination, and that they are of generally good quality. The tool FASTQC can help assess these artifacts in your sequencing data, and is fairly easy to run. First let's look at the required input:
 
 	fastqc --help
 
-Often you will have the ability to run `--help` in order to learn what a command does. The relevant highlights for the `fastqc` command are summarized here:
+Often you will have the ability to run `--help` or `-h` in order to learn what a command does. The relevant highlights for the `fastqc` command are summarized here:
 
 	fastqc --outdir <output_dir> --format <format> <r1_fastq> <r2_fastq>
 
@@ -87,10 +98,10 @@ This should run pretty quickly. When it's done, let's go look at the results:
 
 	ls fastqc
 
-You can see a `.html` file and a `.zip` file for each FASTQ file - if we download the `.html` files, we can look at them on our local computer to inspect the results from FASTQC. Normally you would need to download these files to your machine and open them, but we have made them available at the following URLs:
+You can see a `.html` file and a `.zip` file for each FASTQ file. If we download the `.html` files, we can look at them on our local computer to inspect the results from FASTQC. Normally you would need to download these files to your machine and open them, but we have made them available at the following URLs:
 
-- [NA12878_R1.html](http://web.stanford.edu/class/bios201/NA12878_R1_fastqc.html)
-- [NA12878_R2.html](http://web.stanford.edu/class/bios201/NA12878_R2_fastqc.html)
+- [NA12878_R1_fastqc.html](http://web.stanford.edu/class/bios201/NA12878_R1_fastqc.html)
+- [NA12878_R2_fastqc.html](http://web.stanford.edu/class/bios201/NA12878_R2_fastqc.html)
 
 The FASTQC files can help you diagnose various issues you may have had - we will just consider adapter contamination and trimming low-quality bases today. To understand what all of the different FASTQC results mean, [visit this page](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/).
 
@@ -122,9 +133,16 @@ The relevant fields for us right now are here:
 	# <r1_fastq> is the first set of reads
 	# <r2_fastq> is the second set of reads 
 
+	# note: the adapter sequence is the reverse complement of the actual adapter sequence
+
 So let's run the actual command (**Hint**: You can copy and paste these code segments instead of typing them):
 
-	cutadapt -q 10 --minimum-length 30 -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC  -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT -o NA12878_R1.qc.trimmed.fastq -p NA12878_R2.qc.trimmed.fastq NA12878_R1.fastq NA12878_R2.fastq
+	cutadapt -q 10 --minimum-length 30 \
+		-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC  \
+		-A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT \
+		-o NA12878_R1.qc.trimmed.fastq \
+		-p NA12878_R2.qc.trimmed.fastq \
+		NA12878_R1.fastq NA12878_R2.fastq
 
 :question: **How many read pairs were there before/after trimming?**
 
@@ -169,6 +187,7 @@ Let's do that for each of our samples (normally this can take some time, but we 
 
 We can see various statistics about each of the alignments by running the following commands:
 
+	# to learn about samtools, run: man samtools
 	samtools flagstat NA12878.bam
 	samtools flagstat NA12891.bam
 	samtools flagstat NA12892.bam
@@ -176,6 +195,8 @@ We can see various statistics about each of the alignments by running the follow
 :question: **What percentage of reads for NA12878 were successfully mapped?**
 
 <!-- 93.86% -->
+
+**NOTE**: Alignment files (SAM/BAM format) are important to understand well - we won't look at them in detail today, but in future workshops you will use them a bit more.
 
 ## Marking PCR duplicates and performing base quality recalibration
 
@@ -185,21 +206,57 @@ We use a tool here called Picard which is a piece of software with many useful f
 
 	java -Xmx2g -jar $PICARD
 
+You can also learn more about GATK, the tool we will use to calibrate variants and call variants, by running the help command:
+
+	java -jar $GATK --help
+
 You can mark duplicates in your BAM files like so:
 
-	java -Xmx2g -jar $PICARD MarkDuplicates INPUT=NA12878.bam OUTPUT=NA12878.markduplicates.bam METRICS_FILE=NA12878.markduplicates.metrics.txt OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 CREATE_INDEX=true TMP_DIR=/tmp
+	java -Xmx2g -jar $PICARD MarkDuplicates \
+		INPUT=NA12878.bam \
+		OUTPUT=NA12878.markduplicates.bam \
+		METRICS_FILE=NA12878.markduplicates.metrics.txt \
+		OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
+		CREATE_INDEX=true \
+		TMP_DIR=/tmp
 
-	java -Xmx2g -jar $PICARD MarkDuplicates INPUT=NA12891.bam OUTPUT=NA12891.markduplicates.bam METRICS_FILE=NA12891.markduplicates.metrics.txt OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 CREATE_INDEX=true TMP_DIR=/tmp
+	java -Xmx2g -jar $PICARD MarkDuplicates \
+		INPUT=NA12891.bam \
+		OUTPUT=NA12891.markduplicates.bam \
+		METRICS_FILE=NA12891.markduplicates.metrics.txt \
+		OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
+		CREATE_INDEX=true \
+		TMP_DIR=/tmp
 
-	java -Xmx2g -jar $PICARD MarkDuplicates INPUT=NA12892.bam OUTPUT=NA12892.markduplicates.bam METRICS_FILE=NA12892.markduplicates.metrics.txt OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 CREATE_INDEX=true TMP_DIR=/tmp
+	java -Xmx2g -jar $PICARD MarkDuplicates \
+		INPUT=NA12892.bam \
+		OUTPUT=NA12892.markduplicates.bam METRICS_FILE=NA12892.markduplicates.metrics.txt \
+		OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
+		CREATE_INDEX=true \
+		TMP_DIR=/tmp
 
 We also need to add read groups. These are somewhat hard to define (see discussions [here](https://software.broadinstitute.org/gatk/guide/article?id=6472)), but are **required** by GATK. Again, we can do this using Picard:
 
-	java -jar $PICARD AddOrReplaceReadGroups I=NA12878.markduplicates.bam O=NA12878.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12878 SORT_ORDER=coordinate CREATE_INDEX=True
+	java -jar $PICARD AddOrReplaceReadGroups \
+		I=NA12878.markduplicates.bam \
+		O=NA12878.markduplicates.rg.bam \
+		RGID=1 RGLB=lib1 RGPL=illumina \
+		RGPU=unit1 RGSM=NA12878 \
+		SORT_ORDER=coordinate CREATE_INDEX=True
 
-	java -jar $PICARD AddOrReplaceReadGroups I=NA12891.markduplicates.bam O=NA12891.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12891 SORT_ORDER=coordinate CREATE_INDEX=True
+	java -jar $PICARD AddOrReplaceReadGroups \
+		I=NA12891.markduplicates.bam \
+		O=NA12891.markduplicates.rg.bam \
+		RGID=1 RGLB=lib1 RGPL=illumina \
+		RGPU=unit1 RGSM=NA12891 \
+		SORT_ORDER=coordinate CREATE_INDEX=True
 
-	java -jar $PICARD AddOrReplaceReadGroups I=NA12892.markduplicates.bam O=NA12892.markduplicates.rg.bam RGID=1 RGLB=lib1 RGPL=illumina RGPU=unit1 RGSM=NA12892 SORT_ORDER=coordinate CREATE_INDEX=True
+	java -jar $PICARD AddOrReplaceReadGroups \
+		I=NA12892.markduplicates.bam \
+		O=NA12892.markduplicates.rg.bam \
+		RGID=1 RGLB=lib1 RGPL=illumina \
+		RGPU=unit1 RGSM=NA12892 \
+		SORT_ORDER=coordinate CREATE_INDEX=True
 
 Finally, we perform base quality recalibration (BQSR). From the authors of GATK:
 
@@ -207,41 +264,65 @@ Finally, we perform base quality recalibration (BQSR). From the authors of GATK:
 
 <!--java -jar $PICARD CreateSequenceDictionary R=grch37.fa O=grch37.dict # not necessary?-->
 	
-	java -jar $GATK -T BaseRecalibrator -R grch37.fa -I NA12878.markduplicates.rg.bam -knownSites knownSites.vcf -o NA12878.recal_data.table
+	java -jar $GATK -T BaseRecalibrator -R grch37.fa \
+		-I NA12878.markduplicates.rg.bam \
+		-knownSites knownSites.vcf -o NA12878.recal_data.table
 
-	java -jar $GATK -T BaseRecalibrator -R grch37.fa -I NA12891.markduplicates.rg.bam -knownSites knownSites.vcf -o NA12891.recal_data.table
+	java -jar $GATK -T BaseRecalibrator -R grch37.fa \
+		-I NA12891.markduplicates.rg.bam \
+		-knownSites knownSites.vcf -o NA12891.recal_data.table
 
-	java -jar $GATK -T BaseRecalibrator -R grch37.fa -I NA12892.markduplicates.rg.bam -knownSites knownSites.vcf -o NA12892.recal_data.table
+	java -jar $GATK -T BaseRecalibrator -R grch37.fa \
+		-I NA12892.markduplicates.rg.bam \
+		-knownSites knownSites.vcf -o NA12892.recal_data.table
 
 We then just print out a recalibrated BAM like so:
 
-	java -jar $GATK -T PrintReads -R grch37.fa -I NA12878.markduplicates.rg.bam -BQSR NA12878.recal_data.table -o NA12878.markduplicates.rg.bqsr.bam
+	java -jar $GATK -T PrintReads -R grch37.fa \
+		-I NA12878.markduplicates.rg.bam \
+		-BQSR NA12878.recal_data.table -o NA12878.markduplicates.rg.bqsr.bam
 
-	java -jar $GATK -T PrintReads -R grch37.fa -I NA12891.markduplicates.rg.bam -BQSR NA12891.recal_data.table -o NA12891.markduplicates.rg.bqsr.bam
+	java -jar $GATK -T PrintReads -R grch37.fa \
+		-I NA12891.markduplicates.rg.bam \
+		-BQSR NA12891.recal_data.table -o NA12891.markduplicates.rg.bqsr.bam
 
-	java -jar $GATK -T PrintReads -R grch37.fa -I NA12892.markduplicates.rg.bam -BQSR NA12892.recal_data.table -o NA12892.markduplicates.rg.bqsr.bam
+	java -jar $GATK -T PrintReads -R grch37.fa \
+		-I NA12892.markduplicates.rg.bam \
+		-BQSR NA12892.recal_data.table -o NA12892.markduplicates.rg.bqsr.bam
 
 ## Calling variants in individual samples
 
 We are going to perform variant calling in two stages: **(1)** in individual samples and **(2)** jointly across samples (n = 3). To perform variant calling in each of the samples, we will use the HaplotypeCaller tool in GATK:
 
-	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller -I NA12878.markduplicates.rg.bqsr.bam --emitRefConfidence GVCF -o NA12878.g.vcf
+	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller \
+		-I NA12878.markduplicates.rg.bqsr.bam \
+		--emitRefConfidence GVCF -o NA12878.g.vcf
 
-	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller -I NA12891.markduplicates.rg.bqsr.bam --emitRefConfidence GVCF -o NA12891.g.vcf
+	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller \
+		-I NA12891.markduplicates.rg.bqsr.bam \
+		--emitRefConfidence GVCF -o NA12891.g.vcf
 
-	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller -I NA12892.markduplicates.rg.bqsr.bam --emitRefConfidence GVCF -o NA12892.g.vcf
+	java -Xmx2g -jar $GATK -R grch37.fa -T HaplotypeCaller \
+		-I NA12892.markduplicates.rg.bqsr.bam \
+		--emitRefConfidence GVCF -o NA12892.g.vcf
+
+**NOTE**: It takes a few minutes to run each of these.
 
 ## Joint calling across samples
 
 Calling variants in a single individual is _not_ always ideal, however - we have more confidence in observing a particular variant at a given site if we see it in other individuals (because we have greater confidence that it is a real site rather than some artifact or a sequencing error).
 
-	java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa --variant NA12878.g.vcf --variant NA12891.g.vcf  --variant NA12892.g.vcf -o raw_variants.vcf
+	java -Xmx2g -jar $GATK -T GenotypeGVCFs -R grch37.fa \
+		--variant NA12878.g.vcf \
+		--variant NA12891.g.vcf  \
+		--variant NA12892.g.vcf \
+		-o raw_variants.vcf
 
-After you call variants, take a look at the VCF file that was produced:
+After you call variants, take a look at the [VCF](https://en.wikipedia.org/wiki/Variant_Call_Format) file that was produced:
 
-	more raw_variants.vcf
+	less -S raw_variants.vcf
 
-:question: **How many variants are in the joint VCF file?** (**Hint**: Run vcftools on `raw_variants.vcf`.) 
+:question: **How many variants are in the joint VCF file?** (**Hint**: Run vcftools: `vcftools --vcf raw_variants.vcf` and look at the output.) 
 
 <!-- 201 sites -->
 
@@ -251,21 +332,26 @@ The DNA sequencing data you have been working with is pretty interesting because
 
 Here we will be _phasing by transmission_ with GATK:
 
-	java -jar $GATK -T PhaseByTransmission -R grch37.fa -V raw_variants.vcf -ped family.ped -o phased_variants.vcf
+	java -jar $GATK -T PhaseByTransmission -R grch37.fa \
+		-V raw_variants.vcf \
+		-ped family.ped -o phased_variants.vcf
 
 :question: **How many sites were not phased?** 
 
 <!-- 10 variants -->
 
-So we now have a bunch of variants that are phased in the trio...so what next? Typically we need to refine our variant calls using _variant quality score recalibration (VQSR)_, but that is impossible for us to with this data because we don't have enough sites to work with. [VQSR](http://gatkforums.broadinstitute.org/gatk/discussion/39/variant-quality-score-recalibration-vqsr) is a really interesting topic to learn more about.
+We now have a bunch of variants that are phased in the trio...so what next? Typically we need to refine our variant calls using _variant quality score recalibration (VQSR)_, but that is impossible for us to with this data because we don't have enough sites to work with. [VQSR](http://gatkforums.broadinstitute.org/gatk/discussion/39/variant-quality-score-recalibration-vqsr) is a really interesting topic to learn more about.
 
 ## Filtering our low-quality variants
 
 Given that we are skipping VQSR, there are still some things we can do to clean up our variant calls - for instance, we can remove variants where there weren't many supporting reads, or the reads that mapped to that locus had generally poor mapping qualities, etc. 
 
-	java -jar $GATK -T VariantFiltration -R grch37.fa -V phased_variants.vcf --filterExpression "DP < 10 || QD < 2.0 || FS > 60.0 || MQ < 40.0" --filterName "BIOS201_FILTER" -o flagged_snps.vcf 
+	java -jar $GATK -T VariantFiltration -R grch37.fa \
+		-V phased_variants.vcf \
+		--filterExpression "DP < 10 || QD < 2.0 || FS > 60.0 || MQ < 40.0" \
+		--filterName "BIOS201_FILTER" -o flagged_snps.vcf 
 
-:question: **What do the above filters do?** 
+:question: **What do the above filters do?** (**Hint**: Look in the header section of the VCF file.)
 
 <!-- 
 DP filters out sites with low depth; 
@@ -276,7 +362,11 @@ MQ filters out sites where the supporting reads had generally poor mapping quali
 
 In the previous step, we produced a VCF of variants that we would like to remove from our original VCF. We can remove them like so:
 
-	java -jar $GATK -R grch37.fa -T SelectVariants -V flagged_snps.vcf -o filtered_snps.vcf -selectType SNP -ef --restrictAllelesTo BIALLELIC
+	java -jar $GATK -R grch37.fa -T SelectVariants \
+		-V flagged_snps.vcf \
+		-o filtered_snps.vcf \
+		-selectType SNP -ef \
+		--restrictAllelesTo BIALLELIC
 
 Look over this file in order to answer the following questions:
 
@@ -296,9 +386,13 @@ The last thing we are going to do is compare our results to a [gold standard](ht
 
 One way to see how well we are doing is to compare the original VCF and the filtered VCF to the gold standard. We are interested in how many calls are _discordant_ between the two:
 
-	vcftools --vcf raw_variants.vcf --diff platinum_trio.vcf --diff-indv-discordance  --out raw_to_platinum_comparison
+	vcftools --vcf raw_variants.vcf \
+		--diff platinum_trio.vcf \
+		--diff-indv-discordance  --out raw_to_platinum_comparison
 
-	vcftools --vcf filtered_snps.vcf --diff platinum_trio.vcf --diff-indv-discordance  --out filtered_to_platinum_comparison
+	vcftools --vcf filtered_snps.vcf \
+		--diff platinum_trio.vcf \
+		--diff-indv-discordance  --out filtered_to_platinum_comparison
 
 	more raw_to_platinum_comparison.diff.indv 
 	more filtered_to_platinum_comparison.diff.indv 
