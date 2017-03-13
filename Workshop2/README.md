@@ -59,8 +59,7 @@ We have retrieved a GenePred file of genes on chromosome 10 from UCSC's
 [table browser](https://genome.ucsc.edu/cgi-bin/hgTables) for you.
 
 This is the query we ran:
-![screenshot of UCSC table
-browser](http://web.stanford.edu/class/bios201/table_browser_screenshot.tiff)
+![screenshot of UCSC table browser](http://web.stanford.edu/class/bios201/table_browser_screenshot.png)
 
 Let's take a look at what this file looks like:
 ```
@@ -75,7 +74,7 @@ grep "SFTPA2" annotation/UCSC_table_browser_chr10.txt | less -S
 ```
 
 :question: **How many different transcripts are there for this gene? How
-	   many exons per transcript?**
+	   many exons per transcript?**  
 :question: **Can you figure out how these transcripts relate to each other
 	   (which exons are shared, which are different)?**
 
