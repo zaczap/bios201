@@ -28,11 +28,23 @@ interested.
 
 Goals
 -----
+At the end of this workshop you should be familiar with the following:
+* Gene annotation file formats
+* Spliced alignment and gene count generation for RNA-seq data
+* Basics of SAM/BAM format
+* Visualization of read alignments
+* Picard's summary of RNA-seq alignments
+* Preliminary inspection of count data in R
 
 Setup
 -----
-Follow the setup steps outlined in the first workshop.
-Then copy the workshop materials and `cd` into the copied directory.
+Follow the setup steps outlined in the first workshop (see
+[here](https://github.com/zaczap/bios201/blob/master/setup.md) for a refresher).  
+Then copy the workshop materials and `cd` into the copied directory:
+```
+cp -r /afs/ir/class/bios201/workshop2/ .
+cd workshop2
+```
 
 Spliced Alignment and read counting
 -----------------------------------
