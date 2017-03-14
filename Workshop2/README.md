@@ -10,7 +10,7 @@ values. We will be working with data from [a published study]
 comparing RNA seq from healthy lung samples to lung samples from patients with
 idiopathic pulmonary fibrosis (IPF).
 
-We have provided you with FASTQ files from 8 normal and 8 control
+We have provided you with FASTQ files from 8 normal and 8 IPF
 samples. For this activity, we will be restricting our analysis to
 chromosome 10 to speed up some of the running times.
 
@@ -49,11 +49,14 @@ cd workshop2
 Understanding gene annotation formats
 -------------------------------------
 
+Let's first get familiar with a couple file formats used to specify gene
+annotations.
+
 ### GenePred format
 This format is also referred to as refFlat by Picard tools. This is a file
-format used by UCSC (read about the format
-[here](http://genome.ucsc.edu/FAQ/FAQformat.html#format9)) to encode
-predicted gene positions. Each transcript is described by a single line.
+format used by UCSC to encode predicted gene positions. Each transcript is
+described by a single line. Read about the format
+[here](http://genome.ucsc.edu/FAQ/FAQformat.html#format9).
 
 We have retrieved a GenePred file of genes on chromosome 10 from UCSC's
 [table browser](https://genome.ucsc.edu/cgi-bin/hgTables) for you.
@@ -70,8 +73,9 @@ less -S annotation/UCSC_table_browser_chr10.txt
 Since we're working with lung samples, let's check out Surfactant Protein
 A2 (SFTPA2), a gene highly expressed in lung.
 ```
-grep "SFTPA2" annotation/UCSC_table_browser_chr10.txt | less -S
+grep "SFTPA2" annotation/UCSC_table_browser_chr10.txt | column -t | less -S
 ```
+(`column -t` helps line up columns in a human-readable way)
 
 :question: **How many different transcripts are there for this gene? How
 	   many exons per transcript?**  
@@ -110,8 +114,110 @@ You should be able to identify the same transcripts as in the GenePred format.
 Spliced Alignment and read counting
 -----------------------------------
 
+We will use STAR to align our RNA-seq reads. STAR performs best if you can
+provide it with a gene annotation (in GTF format) as it uses the
+information about known splice junctions. However, STAR also infers novel
+splice junctions based on the data, which it outputs. The tool suggests
+that after doing an initial alignment, you provide STAR with the junctions
+it has infered and rerun the mapping. This is what it calls 2-pass
+mapping.
+
+Before aligning reads with STAR, we need to build the genome index.
+If you have known genes in GTF format, you can provide it at this step and
+we will.
+
+```
+## Do not run this, we did it for you already to save time.
+STAR --runThreadN 20 \
+     --runMode genomeGenerate \
+     --genomeDir STAR_hg19_chr10 \
+     --genomeFastaFiles chr10.fa \
+     --sjdbGTFfile annotation/gencode.v19.annotation_chr10.gtf \
+     --sjdbOverhang 100  # readLength - 1
+```
+
+Now we can map the samples.
+It takes a few minutes to run each alignment, so we will only have you map
+two of the 16 samples and will provide you with the results for the rest.
+
+The generic mapping command we will be using
+```
+STAR --runThreadN <NumberOfThreads> \
+     --genomeDir </path/to/genomeDir> \
+     --readFilesIn </path/to/read1> </path/to/read2> \
+     --readFilesCommand <UncompressionCommand> \
+     --outFileNamePrefix </path/to/output> \
+     --outSAMtype <OutputFormat> \
+     --sjdbFileChrStartEnd <JunctionFile> \
+     --quantMode <QuantificationType>
+```
+The first three arguments are required. The rest are optional but we will
+use them to provide non-default values. The last two we will only use for
+the second-pass alignment.
+
+**NOTE:** that there are *lots* of parameters that you can adjust. The default
+parameters work well for us, but there is a note on the STARs homepage:
+"This release was tested with the default parameters for human and mouse
+genomes. Please contact the author for a list of recommended parameters
+for much larger or much smaller genomes." Keep that in mind if you want to
+use STAR for other organisms.
+
+<!---STAR runs more quickly than some other spliced aligners because it loads
+its genome representation into memory. If you are working with a large
+genome and need to map multiple samples, you can instruct STAR to load it
+once and share that genome between multiple processes.---> 
+
+Run the first-pass alignment for Norm1 and IPF1.
+```
+STAR --runThreadN 4 \
+     --genomeDir STAR_hg19_chr10 \
+     --readFilesIn fastq/Norm1_R1.fastq.gz fastq/Norm1_R2.fastq.gz \
+     --readFilesCommand gunzip -c \
+     --outFileNamePrefix bam_pass1/Norm1_ \
+     --outSAMtype BAM Unsorted
+
+STAR --runThreadN 4 \
+     --genomeDir STAR_hg19_chr10 \
+     --readFilesIn fastq/IPF1_R1.fastq.gz fastq/IPF1_R2.fastq.gz \
+     --readFilesCommand gunzip -c \
+     --outFileNamePrefix bam_pass1/IPF1_ \
+     --outSAMtype BAM Unsorted
+
+```
+
+Then run the second-pass alignment inputting the junction files for **all
+16** samples. We'll also get STAR to output the number of reads mapping to
+each gene.
+```
+# This collects the names of all the junction files from the first pass.
+# We can then pass this information to the aligner below.
+junctions=`ls bam_pass1/*_SJ.out.tab`
+
+STAR --runThreadN 4 \
+     --genomeDir STAR_hg19_chr10 \
+     --readFilesIn fastq/Norm1_R1.fastq.gz fastq/Norm1_R2.fastq.gz \
+     --readFilesCommand gunzip -c \
+     --outFileNamePrefix bam_pass2/Norm1_ \
+     --outSAMtype BAM Unsorted \
+     --sjdbFileChrStartEnd $junctions \
+     --quantMode GeneCounts
+
+STAR --runThreadN 4 \
+     --genomeDir STAR_hg19_chr10 \
+     --readFilesIn fastq/IPF1_R1.fastq.gz fastq/IPF1_R2.fastq.gz \
+     --readFilesCommand gunzip -c \
+     --outFileNamePrefix bam_pass2/IPF1_ \
+     --outSAMtype BAM Unsorted \
+     --sjdbFileChrStartEnd $junctions \
+     --quantMode GeneCounts
+
+```
+
 Understanding SAM/BAM format
 ----------------------------
+
+Summaring mapping results
+-------------------------
 
 Visualizing alignments with IGV
 -------------------------------
