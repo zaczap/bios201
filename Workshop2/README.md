@@ -155,7 +155,7 @@ The first three arguments are required. The rest are optional but we will
 use them to provide non-default values. The last two we will only use for
 the second-pass alignment.
 
-**NOTE:** that there are *lots* of parameters that you can adjust. The default
+**NOTE:** There are *lots* of parameters that you can adjust. Most default
 parameters work well for us, but there is a note on the STARs homepage:
 "This release was tested with the default parameters for human and mouse
 genomes. Please contact the author for a list of recommended parameters
@@ -186,7 +186,7 @@ STAR --runThreadN 4 \
 ```
 
 Then run the second-pass alignment inputting the junction files for **all
-16** samples. We'll also get STAR to output the number of reads mapping to
+16 samples**. We'll also get STAR to output the number of reads mapping to
 each gene.
 ```
 # This collects the names of all the junction files from the first pass.
