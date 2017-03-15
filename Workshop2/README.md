@@ -79,8 +79,8 @@ grep "SFTPA2" annotation/UCSC_table_browser_chr10.txt | column -t | less -S
 
 :question: **1.1 How many different transcripts are there for this gene? How
 	   many exons per transcript?**  
-:question: **1.2 Can you figure out how these transcripts relate to each other
-	   (which exons are shared, which are different)?**
+:question: **1.2 Can you figure out how these transcripts relate to each
+	   other (which exons are shared, which are different)?**
 
 ### GTF/GFF format
 Gene Transfer Format (GTF) is an extension of the General Feature Format
@@ -231,13 +231,14 @@ samtools view bam_pass2/Norm1_Aligned.out.sorted.bam | \
 	 grep "HWI-ST689:184:D0YYWACXX:1:1303:18412:72408_1:N:0:CGATGT"
 ```
 
-:question: **3.3 Take a look at the flag and the CIGAR strings of these
-	   two reads. What do we know about how these reads are mapped?
-	   To answer this you should read the CIGAR section of page 5 of
-	   the the full SAM specification
+Take a look at the CIGAR strings of these two reads. To understand them,
+	   take a look at the CIGAR section of page 5 of the full SAM
+	   specification
 	   [here](http://samtools.github.io/hts-specs/SAMv1.pdf) and you
 	   can also check out [this brief explanation of CIGAR
-	   strings](http://genome.sph.umich.edu/wiki/SAM#What_is_a_CIGAR.3F).**
+	   strings](http://genome.sph.umich.edu/wiki/SAM#What_is_a_CIGAR.3F).
+
+:question: **3.3 What do we know about how these reads are mapped?**
 
 4 Visualizing alignments with IGV
 ----------------------------------
@@ -302,7 +303,7 @@ cat bam_pass2/Norm1_Aligned.out.sorted.metrics.txt | \
     column -t | less -S
 ```
 
-:question: **5.1 What percentage of reads map to coding bases?**
+:question: **5.1 What percentage of reads map to coding bases?**  
 :question: **5.2 What would you infer if that percentage was very low, say
 	   less than 5%?**
 
@@ -419,7 +420,7 @@ pheatmap(log2normCounts[top, ], show_rownames = TRUE, annotation_col = columnDat
 ```
 
 :question: **6.1 One sample looks very different from the others. 
-	   Which one?**
+	   Which one?**  
 :question: **6.2 How does the outlier sample compare to the other samples
 	   in terms of SFTPA1 and SFTPA2, two lung-specific genes? What
 	   does that suggest?** 
