@@ -1,5 +1,5 @@
-Workshop2: Aligning and quantifying reads from RNA-seq
-======================================================
+Workshop 2: Aligning and quantifying reads from RNA-seq
+=======================================================
 
 Introduction
 ------------
