@@ -313,8 +313,7 @@ counts files that STAR generated for us.
 
 **The rest of this is run on your laptop. Exit corn by typing `exit` or `CTRL-D`.**
 ```
-# In the commands below, you need to replace your sunet ID and the path to
-your copy of workshop 2.
+# In the commands below, you need to replace your sunet ID and the path to your copy of workshop 2.
 
 # If you are using Mac or Linux, from the terminal, run:
 scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/bam_pass2/*_ReadsPerGene.out.tab .
