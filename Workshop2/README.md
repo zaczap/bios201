@@ -220,7 +220,7 @@ samtools view bam_pass2/Norm1_Aligned.out.bam | head -n1
 A overview of each column is described
 [here](http://www.htslib.org/doc/sam.html).
 
-:question: **3.1 Where did this read map? What about its mate?**
+:question: **3.1 Where did this read map? What about its mate?**  
 :question: **3.2 What information do we know about this read based on its
 	   flag? You may want to use [Picard's Explain Flags
 	   tool](https://broadinstitute.github.io/picard/explain-flags.html)**
