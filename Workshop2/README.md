@@ -296,7 +296,7 @@ with the reads. Choose "Select by name" and enter
 "HWI-ST689:184:D0YYWACXX:1:2315:14384:11932_1:N:0:CGATGT". You should see
 the pair of reads outlined in red.
 
-Did you correctly infer the relative mapping of the read pair before?
+**Did you correctly infer the relative mapping of the read pair before?**
 
 ### Viewing a particular gene and the strand specific of reads
 
