@@ -183,7 +183,7 @@ its genome representation into memory. If you are working with a large
 genome and need to map multiple samples, you can instruct STAR to load it
 once and share that genome between multiple processes. --> 
 
-Run the first-pass alignment for Norm1.
+Run the first-pass alignment for Norm1. This can take a few minutes.
 ```
 genomeDir=/afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
 
@@ -242,7 +242,7 @@ A overview of each column is described
 Let's also take a look at a specific pair of reads:
 ```
 samtools view bam_pass2/Norm1_Aligned.out.bam | \
-	 grep "HWI-ST689:184:D0YYWACXX:1:1303:18412:72408_1:N:0:CGATGT"
+	 grep "HWI-ST689:184:D0YYWACXX:1:2315:14384:11932_1:N:0:CGATGT"
 ```
 
 Take a look at the CIGAR strings of these two reads. To understand them,
@@ -281,20 +281,44 @@ ssh <sunet>@corn.stanford.edu -X
 igv.sh
 ```
 Be patient while IGV lauches in a seperate graphical window. This can take
-a bit of time. Once the IGV window appears, go to File -> Open from file.
+a bit of time. Once the IGV window appears, go to File -> Load from file.
 You should then navigate to and select `bam_pass2/Norm1_Aligned.out.sorted.bam`.
 
+#### Looking at the read pair we inspected in the bam file
+
 When it opens, you won't see anything until you zoom into a specific
-locus. Enter "SFTPA2" in the search box. This is the gene we were
-considering before. You should now be able to see the reads mapping to
+locus. Enter "chr10:79,741,049-79,744,741" in the search box.
+You should now be able to see the reads mapping to
 this region as well as a coverage profile at the top.
+
+To find the read pair we searched for in the bam, right click the area
+with the reads. Choose "Select by name" and enter
+"HWI-ST689:184:D0YYWACXX:1:2315:14384:11932_1:N:0:CGATGT". You should see
+the pair of reads outlined in red.
+
+Did you correctly infer the relative mapping of the read pair before?
+
+#### Viewing a particular gene and the strand specific of reads
+
+You can also search for a specific gene.
+Enter "SFTPA2" in the search box. This is the gene we were
+considering before. 
 
 If you right click in the read track, you'll see several options for
 coloring and reordering the reads. Color the reads by the strand of the
 first read in the pair. Pink reads are mapped to the forward strand and
 purple ones to the reverse.
 
-:question: **4.1 What do you notice about the read orientations?**
+:question: **4.1 What do you notice about the read orientations? How does
+	   this compare to the gene orientation?**
+
+#### Viewing a sashimi plot
+
+Sashimi plots are a common was of visualizing splicing events.
+Search for gene "SMNDC1". Once it loads, right click the read area and
+select "Sashimi plot". A new window will appear with the plot.
+
+:question: **4.2 What do the numbers and the curved lines represent?**
 
 5 Generating mapping metrics with Picard
 -----------------------------------------
