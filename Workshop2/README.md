@@ -64,7 +64,7 @@ This is the query we ran:
 Let's take a look at what this file looks like:
 ```
 less -S annotation/UCSC_table_browser_chr10.txt
-(use up/down and side arrows to navigate the file and type q to quit)
+# use up/down and side arrows to navigate the file and type q to quit
 ```
 
 Since we're working with lung samples, let's check out Surfactant Protein
@@ -125,7 +125,7 @@ we will.
 
 ```
 ## Do not run this, we did it for you already to save time.
-genomeDir=afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
+genomeDir=/afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
 STAR --runThreadN 20 \
      --runMode genomeGenerate \
      --genomeDir $genomeDir \
@@ -160,14 +160,14 @@ genomes. Please contact the author for a list of recommended parameters
 for much larger or much smaller genomes." Keep that in mind if you want to
 use STAR for other organisms.
 
-<!---STAR runs more quickly than some other spliced aligners because it loads
+<!-- STAR runs more quickly than some other spliced aligners because it loads
 its genome representation into memory. If you are working with a large
 genome and need to map multiple samples, you can instruct STAR to load it
-once and share that genome between multiple processes.---> 
+once and share that genome between multiple processes. --> 
 
 Run the first-pass alignment for Norm1 and IPF1.
 ```
-genomeDir=afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
+genomeDir=/afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
 
 STAR --runThreadN 4 \
      --genomeDir $genomeDir \
