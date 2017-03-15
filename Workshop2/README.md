@@ -5,10 +5,7 @@ Introduction
 ------------
 
 Today, we are going to process RNA sequencing data into gene expression
-values. We will be working with data from [a published study] 
-(http://journals.plos.org/plosone/article/file?type=supplementary&id=info:doi/10.1371/journal.pone.0097550.s002).
-comparing RNA seq from healthy lung samples to lung samples from patients with
-idiopathic pulmonary fibrosis (IPF).
+values. We will be working with data from [a published study](http://journals.plos.org/plosone/article/file?type=supplementary&id=info:doi/10.1371/journal.pone.0097550.s002), comparing RNA seq from healthy lung samples to lung samples from patients with idiopathic pulmonary fibrosis (IPF).
 
 We have provided you with FASTQ files from 8 normal and 8 IPF
 samples. For this activity, we will be restricting our analysis to
