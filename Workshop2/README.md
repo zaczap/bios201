@@ -128,9 +128,10 @@ we will.
 
 ```
 ## Do not run this, we did it for you already to save time.
+genomeDir=afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
 STAR --runThreadN 20 \
      --runMode genomeGenerate \
-     --genomeDir STAR_hg19_chr10 \
+     --genomeDir $genomeDir \
      --genomeFastaFiles chr10.fa \
      --sjdbGTFfile annotation/gencode.v19.annotation_chr10.gtf \
      --sjdbOverhang 100  # readLength - 1
@@ -169,8 +170,10 @@ once and share that genome between multiple processes.--->
 
 Run the first-pass alignment for Norm1 and IPF1.
 ```
+genomeDir=afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
+
 STAR --runThreadN 4 \
-     --genomeDir STAR_hg19_chr10 \
+     --genomeDir $genomeDir \
      --readFilesIn fastq/Norm1_R1.fastq.gz fastq/Norm1_R2.fastq.gz \
      --readFilesCommand gunzip -c \
      --outFileNamePrefix bam_pass1/Norm1_ \
@@ -186,7 +189,7 @@ each gene.
 junctions=`ls bam_pass1/*_SJ.out.tab`
 
 STAR --runThreadN 4 \
-     --genomeDir STAR_hg19_chr10 \
+     --genomeDir $genomeDir \
      --readFilesIn fastq/Norm1_R1.fastq.gz fastq/Norm1_R2.fastq.gz \
      --readFilesCommand gunzip -c \
      --outFileNamePrefix bam_pass2/Norm1_ \
@@ -417,4 +420,5 @@ pheatmap(log2normCounts[top, ], show_rownames = TRUE, annotation_col = columnDat
 
 :question: **One sample looks very different from the others. Which one?**
 :question: **How does the outlier sample compare to the other samples in
-	   terms of SFTPA1 and SFTPA2, two lung-specific genes? What does that suggest?**
+	   terms of SFTPA1 and SFTPA2, two lung-specific genes? What does
+	   that suggest?** 
