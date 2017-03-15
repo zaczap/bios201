@@ -298,7 +298,7 @@ the pair of reads outlined in red.
 
 **Did you correctly infer the relative mapping of the read pair before?**
 
-### Viewing a particular gene and the strand specific of reads
+### Viewing a particular gene and the strand of reads
 
 You can also search for a specific gene.
 Enter "SFTPA2" in the search box. This is the gene we were
