@@ -171,8 +171,7 @@ genomeDir=/afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
 
 STAR --runThreadN 4 \
      --genomeDir $genomeDir \
-     --readFilesIn fastq/Norm1_R1.fastq.gz fastq/Norm1_R2.fastq.gz \
-     --readFilesCommand gunzip -c \
+     --readFilesIn fastq/Norm1_R1.fastq fastq/Norm1_R2.fastq \
      --outFileNamePrefix bam_pass1/Norm1_ \
      --outSAMtype BAM Unsorted
 ```
@@ -187,8 +186,7 @@ junctions=`ls bam_pass1/*_SJ.out.tab`
 
 STAR --runThreadN 4 \
      --genomeDir $genomeDir \
-     --readFilesIn fastq/Norm1_R1.fastq.gz fastq/Norm1_R2.fastq.gz \
-     --readFilesCommand gunzip -c \
+     --readFilesIn fastq/Norm1_R1.fastq fastq/Norm1_R2.fastq \
      --outFileNamePrefix bam_pass2/Norm1_ \
      --outSAMtype BAM Unsorted \
      --sjdbFileChrStartEnd $junctions \
