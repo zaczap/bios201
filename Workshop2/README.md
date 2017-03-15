@@ -284,7 +284,7 @@ Be patient while IGV lauches in a seperate graphical window. This can take
 a bit of time. Once the IGV window appears, go to File -> Load from file.
 You should then navigate to and select `bam_pass2/Norm1_Aligned.out.sorted.bam`.
 
-#### Looking at the read pair we inspected in the bam file
+### Looking at the read pair we inspected in the bam file
 
 When it opens, you won't see anything until you zoom into a specific
 locus. Enter "chr10:79,741,049-79,744,741" in the search box.
@@ -298,7 +298,7 @@ the pair of reads outlined in red.
 
 Did you correctly infer the relative mapping of the read pair before?
 
-#### Viewing a particular gene and the strand specific of reads
+### Viewing a particular gene and the strand specific of reads
 
 You can also search for a specific gene.
 Enter "SFTPA2" in the search box. This is the gene we were
@@ -312,7 +312,7 @@ purple ones to the reverse.
 :question: **4.1 What do you notice about the read orientations? How does
 	   this compare to the gene orientation?**
 
-#### Viewing a sashimi plot
+### Viewing a sashimi plot
 
 Sashimi plots are a common was of visualizing splicing events.
 Search for gene "SMNDC1". Once it loads, right click the read area and
