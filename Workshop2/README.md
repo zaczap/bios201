@@ -222,7 +222,7 @@ A overview of each column is described
 
 Let's also take a look at a specific pair of reads:
 ```
-samtools view bam_pass2/Norm1_Aligned.out.sorted.bam | \
+samtools view bam_pass2/Norm1_Aligned.out.bam | \
 	 grep "HWI-ST689:184:D0YYWACXX:1:1303:18412:72408_1:N:0:CGATGT"
 ```
 
