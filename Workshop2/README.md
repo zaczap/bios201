@@ -266,6 +266,13 @@ samtools sort -o bam_pass2/Norm1_Aligned.out.sorted.bam bam_pass2/Norm1_Aligned.
 
 samtools index bam_pass2/Norm1_Aligned.out.sorted.bam
 ```
+If you're using a Mac, you can skip this next step. If you're running PuTTY on
+Windows, you'll need to install [Xming](https://sourceforge.net/projects/xming/files/latest/download), an 
+X11 forwarding client. Once you've installed Xming, open
+a new PuTTY window and log in to corn as usual, except on the initial PuTTY
+window, after typing in username<nolink>@corn.stanford.edu, then go to Connection -\> SSH -\> X11 and check the box labeled "Enable X11 forwarding". Then press
+the "Open" button to open an SSH connection with X11 forwarding, used for 
+showing graphical interfaces over a remote connection.
 
 Then we want to launch IGV. To do this on corn, open a new terminal window
 and `ssh` again, this time providing -X. Then run through the remaining
