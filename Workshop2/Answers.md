@@ -64,4 +64,4 @@ primary alignment.
 **6.1** Norm7
 
 **6.2** In Norm7, these two genes are barely expressed compared to the
-  other samples. This suggests thatt Norm7 is not actually a lung sample.
+  other samples. This suggests that Norm7 is not actually a lung sample.
