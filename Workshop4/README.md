@@ -6,7 +6,7 @@ We will be working with ATAC-seq data from two hematopoeitic cell types -- Natur
 
 We have already aligned and filtered the reads -- we will be starting this analysis with bam files. Additionally, only reads mapping to chr4 have been retained, in the interest of speeding up all the analyses.   
 
-# Setup
+## Setup
 
 Follow the setup steps outlined in the first workshop.
 ```
@@ -35,7 +35,7 @@ cp -r /afs/ir/class/bios201/workshop4/ .
 cd workshop4
 ```
 
-# Making coverage track
+## Making coverage track
 
 For visualizing ATAC-seq data, it can be helpful to make a "coverage" track showing how many fragments map to a particular region of the genome. We will be using the `bamCoverage` tool from the deepTools suite to make coverage tracks. To learn about all the options, check out the [bamCoverage documenation](https://deeptools.readthedocs.io/en/latest/content/tools/bamCoverage.html).
 
@@ -57,7 +57,7 @@ bamCoverage --bam Donor7256-HSC.chr4.bam -o Donor7256-HSC.chr4.bw --binSize 100 
 
 ```
 
-# Using the UCSC Genome Browser to visualize the data
+## Using the UCSC Genome Browser to visualize the data
 
 We are going to use the UCSC Genome Browser to visualize our ATAC-seq data. First, navigate to the [UCSC Genome Browser](https://genome.ucsc.edu/cgi-bin/hgGateway).  For genome build, select "Feb. 2009 GCRCh37/hg19".  For region, type in `chr4:105,079,645-105,815,457`.
 
@@ -87,10 +87,11 @@ Explore different options for displaying the data, selected from the dropdown bo
 
 Use the same procedure to add tracks for the other three samples.  You can add them all at once by pasting each link into the `Paste URLs or data` box.
 
-:question: **1.1 
+:question: What is the max coverage for each sample in the chr4:105,079,645-105,815,457 window?
 
+Keep your UCSC genome browser open -- we'll come back to it.
 
-# Peak calling
+## Peak calling
 
 The first step in our analysis will be to call peaks for each sample.  Peaks are areas of the genome where we have a pileup of signal -- in ATAC-seq these represent "accessible" regions of the genome.  
 
@@ -115,3 +116,38 @@ To learn more about these options and the other available options, read throught
 macs2 callpeak --treatment Donor2596-NK.chr4.bam --name Donor2596-NK --format BAMPE \
   --nomodel --call-summits --nolambda --keep-dup all -p -0.01 -g 1.7e8
 ```
+
+Now do the same for the other three bam files.
+
+Several different files are output with a few formats.  We will focus on the narrowPeak files.  To learn about this format, read this [description](https://genome.ucsc.edu/FAQ/FAQformat#format12).
+
+
+:question: How many peaks are there for each sample?
+
+## Visualizing Peaks
+
+Copy each of the narrowPeak files to your WWW folder. Then add the tracks to your UCSC genome browser session.
+
+## Manipulating peak files
+
+We can use tools from the bedtools suite to 
+
+## Aggregating coverage at TSS
+
+## Finding motifs in peaks
+
+## Finding differential peaks [optional challenge]
+
+Use what you learned from the previous section about calling differential expression to calling differential peak accessibility.
+
+Find the motifs enriched in your set of differential peaks relative to all peaks.
+
+
+
+
+
+
+
+
+
+
