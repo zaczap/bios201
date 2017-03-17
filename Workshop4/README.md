@@ -45,17 +45,13 @@ We will be using the following set of options:
 bamCoverage --bam <input.bam> -o <output> --binSize 100 --normalizeUsingRPKM --extendReads
 ```
 
-To do this for all four of our bam files:
+To do this for one of our bam files:
+
 ```
 bamCoverage --bam Donor2596-NK.chr4.bam -o Donor2596-NK.chr4.bw --binSize 100 --normalizeUsingRPKM --extendReads
-
-bamCoverage --bam Donor5483-NK.chr4.bam -o Donor5483-NK.chr4.bw --binSize 100 --normalizeUsingRPKM --extendReads
-
-bamCoverage --bam Donor4983-HSC.chr4.bam -o Donor4983-HSC.chr4.bw --binSize 100 --normalizeUsingRPKM --extendReads
-
-bamCoverage --bam Donor7256-HSC.chr4.bam -o Donor7256-HSC.chr4.bw --binSize 100 --normalizeUsingRPKM --extendReads
-
 ```
+
+Now run the bamCoverage for the other three bam files as well, changing the `--bam` and `-o` arguments as appropriate.  
 
 ## Using the UCSC Genome Browser to visualize the data
 
@@ -89,13 +85,16 @@ Use the same procedure to add tracks for the other three samples.  You can add t
 
 :question: What is the max coverage for each sample in the chr4:105,079,645-105,815,457 window?
 
-Keep your UCSC genome browser open -- we'll come back to it.
+Play around with the zooming to view more or less of the data.
+
 
 ## Peak calling
 
-The first step in our analysis will be to call peaks for each sample.  Peaks are areas of the genome where we have a pileup of signal -- in ATAC-seq these represent "accessible" regions of the genome.  
+We're going to go back to the terminal, but keep your UCSC genome browser open -- we'll come back to it.
 
-We will use the tool MACS2 to call peaks. With MACS2 you have the option of calling "narrow" or "broad" peaks. Generally, for TF ChIP-seq, "narrow" peaks are appropriate while for histone modification ChIP-seq "broad" peaks are appropriate. For ATAC-seq, peaks can vary in size and depending on what you want do with the peaks it may make sense to call either broad or narrow peaks.  For this tutorial, we will call narrow peaks. In addition we will use the `--call-summits` option to call a "summit" in each peak-- this represents where the peak has the greatest intensity.  
+The next step will be to call peaks for each sample.Peaks are areas of the genome where we have a pileup of signal -- in ATAC-seq these represent "accessible" regions of the genome. You could probably visually identify some of these regions in the genome browser.
+
+We will use the tool MACS2 to call peaks. With MACS2 you have the option of calling "narrow" or "broad" peaks. Generally, for TF ChIP-seq, "narrow" peaks are appropriate while for histone modification ChIP-seq "broad" peaks are appropriate. For ATAC-seq, peaks can vary in size and depending on what you want do with the peaks it may make sense to call either broad or narrow peaks.  For this tutorial, we will first call narrow peaks using the `--call-summits` option to additionally call a "summit" in each peak-- this represents where the peak has the greatest intensity.  
 
 Here we will use the following MACS2 options:
 
@@ -112,25 +111,58 @@ Here we will use the following MACS2 options:
 
 To learn more about these options and the other available options, read throught the [MACS2 documentation](https://github.com/taoliu/MACS)
 
+For our first sample:
+
 ```
 macs2 callpeak --treatment Donor2596-NK.chr4.bam --name Donor2596-NK --format BAMPE \
-  --nomodel --call-summits --nolambda --keep-dup all -p -0.01 -g 1.7e8
+  --nomodel --call-summits --nolambda --keep-dup all -q 0.01 -g 1.7e8
 ```
 
-Now do the same for the other three bam files.
+Now do the same for the other three bam files, replacing the `--treatment` and `--name` arguments.  
 
-Several different files are output with a few formats.  We will focus on the narrowPeak files.  To learn about this format, read this [description](https://genome.ucsc.edu/FAQ/FAQformat#format12).
+Note that we can also call peaks on multiple samples combined by giving more than one bam file to `--treatment`.  This generally makes sense when you have technical replicates.
+
+Several different files are output with a few formats.  
+
+:question: What kinds of files were output by MACS2?  What is the difference between the different formats?
+
+:question: How many peaks are there for each sample? 
+[hint: Remember the `wc` command...]
+
+Now let's call broad peaks.  Simply remove the `--call-summits` flag and add the `--broad` flag and change the `name` argument.
+
+```
+macs2 callpeak --treatment Donor2596-NK.chr4.bam --name Donor2596-NK-broad --format BAMPE \
+  --nomodel --broad --nolambda --keep-dup all -q 0.01 -g 1.7e8 
+```
+
+:question: What kinds of files were output for the broad peaks?  What is the difference between the different formats? How do they compare to the output for narrow peaks?
+
+:question: Are there more broad peaks or narrow peaks?
 
 
-:question: How many peaks are there for each sample?
+## Visualizing Peaks :mount_fuji:
 
-## Visualizing Peaks
+We will focus on the narrowPeak and broadPeak files.  To learn about this format, read the [descriptions](https://genome.ucsc.edu/FAQ/FAQformat#format12).
 
-Copy each of the narrowPeak files to your WWW folder. Then add the tracks to your UCSC genome browser session.
+To be able to visualize the narrowPeak files in UCSC Genome Browser, we have to add a line at the top of the file indicating the track type.  We will also add a name.  
+
+``` 
+echo 'track type=narrowPeak name="Donor2596 NK Peaks"' | cat - Donor2596-NK_peaks.narrowPeak > ~/WWW/Donor2596-NK_peaks.narrowPeak 
+```
+
+Then add the tracks to your UCSC genome browser session by pasting the appropriate link.
+
+``` 
+echo 'track type=broadPeak name="Donor2596 NK Peaks Broad"' | cat - Donor2596-NK-broad_peaks.broadPeak > ~/WWW/Donor2596-NK-broad_peaks.broadPeak 
+```
+
+
+:question: How many peaks are there in the window:  ?
 
 ## Manipulating peak files
 
-We can use tools from the bedtools suite to 
+We can use tools from the bedtools suite to do things like merge nearby peaks, find intersection between peaks in two different bam files and much more.
 
 ## Aggregating coverage at TSS
 
