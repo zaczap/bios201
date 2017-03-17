@@ -389,9 +389,10 @@ counts files that STAR generated for us.
 ### The rest of this is run on your laptop. Exit corn by typing `exit` or `CTRL-D`.
 
 In the commands below, you need to replace your sunet ID and the path to
-your copy of workshop 2.
-NOTE: You can first create and/or move to a folder where you want to put the files.
-** Take note of where you download the files, we will need that information in a couple steps.**
+your copy of workshop 2.  
+NOTE: You can first create and/or move to a folder where you want to put
+the files.  
+**Take note of where you download the files, we will need that information in a couple steps.**
 
 ```
 # If you are using Mac or Linux, from the terminal, run:
