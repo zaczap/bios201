@@ -156,7 +156,7 @@ STAR --runThreadN 20 \
      --sjdbOverhang 100  # readLength - 1
 ```
 
-Now we can map the samples.
+Now we can do the mapping.
 It takes a few minutes to run each alignment, so we will only have you map
 one of the 16 samples and will provide you with the results for the rest.
 
@@ -187,6 +187,8 @@ genome and need to map multiple samples, you can instruct STAR to load it
 once and share that genome between multiple processes. --> 
 
 Run the first-pass alignment for Norm1. This can take a few minutes.
+While you're waiting for it to run, you can read about the SAM/BAM format
+from the links in the next section.
 ```
 genomeDir=/afs/ir/users/e/t/etsang/bios201/workshop2/STAR_hg19_chr10
 
@@ -266,24 +268,32 @@ Take a look at the CIGAR strings of these two reads. To understand them,
 
 We will now use the Integrative Genomics Viewer (IGV) to look at our
 alignments graphically. IGV requires bam files to be coordinate-sorted and
-indexed so let's do that first with samtools.
+indexed so let's do that first with samtools. Indexing the bam creates a
+separate file with a .bai suffix that contains information to make it easy
+for programs like iGV to quickly retrieve sections of the BAM file when
+the user provides genomic coordinates.
 
 ```
 samtools sort -o bam_pass2/Norm1_Aligned.out.sorted.bam bam_pass2/Norm1_Aligned.out.bam
 
 samtools index bam_pass2/Norm1_Aligned.out.sorted.bam
 ```
+
 If you're using a Mac, you can skip this next step. If you're running PuTTY on
 Windows, you'll need to install [Xming](https://sourceforge.net/projects/xming/files/latest/download), an 
 X11 forwarding client. Once you've installed Xming, open
 a new PuTTY window and log in to corn as usual, except on the initial PuTTY
-window, after typing in username<nolink>@corn.stanford.edu, then go to Connection -\> SSH -\> X11 and check the box labeled "Enable X11 forwarding". Then press
-the "Open" button to open an SSH connection with X11 forwarding, used for 
-showing graphical interfaces over a remote connection.
+window, after typing in username<nolink>@corn.stanford.edu, then go to
+Connection -\> SSH -\> X11 and check the box labeled "Enable X11
+forwarding". Then press the "Open" button to open an SSH connection with
+X11 forwarding, used for showing graphical interfaces over a remote connection.
 
-Then we want to launch IGV. To do this on corn, open a new terminal window
+Then we want to launch IGV. To do this on corn, open **a new terminal window**
 and `ssh` again, this time providing -X. Then run through the remaining
-[setup steps](https://github.com/zaczap/bios201/blob/master/setup.md).
+[setup
+steps](https://github.com/zaczap/bios201/blob/master/setup.md). You can
+keep the other terminal window you were working with open because we will
+go back to it.
 ```
 ssh <sunet>@corn.stanford.edu -X
 
@@ -294,7 +304,7 @@ ssh <sunet>@corn.stanford.edu -X
 
 igv.sh
 ```
-Be patient while IGV lauches in a seperate graphical window. This can take
+Be patient while IGV lauches in a separate graphical window. This can take
 a bit of time. Once the IGV window appears, go to File -> Load from file.
 You should then navigate to and select `bam_pass2/Norm1_Aligned.out.sorted.bam`.
 
@@ -308,7 +318,7 @@ this region as well as a coverage profile at the top.
 To find the read pair we searched for in the bam, right click the area
 with the reads. Choose "Select by name" and enter
 "HWI-ST689:184:D0YYWACXX:1:2315:14384:11932_1:N:0:CGATGT". You should see
-the pair of reads outlined in red.
+the pair of reads get a colored outline.
 
 :question: **4.1 Did you correctly infer the relative mapping of the read pair before?**
 
@@ -344,6 +354,9 @@ CollectRnaSeqMetrics and we'll run it here. It uses a refFlat file
 [here](http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/) and
 subsetted to chromosome 10.
 
+In your initial terminal window, run:  
+(If you closed that first window when you logged in with -X to use IGV, you'll
+need to `cd workshop2` again.)
 ```
 java -jar $PICARD CollectRnaSeqMetrics \
      REF_FLAT=annotation/refFlat.chr10.txt \
@@ -377,12 +390,15 @@ counts files that STAR generated for us.
 ```
 # In the commands below, you need to replace your sunet ID and the path to your copy of workshop 2.
 # ** Take note of where you download the files, we will need that information in a couple steps.**
+# ** You can first create and/or move to a folder where you want to put the files.**
 
 # If you are using Mac or Linux, from the terminal, run:
 scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/bam_pass2/*_ReadsPerGene.out.tab .
 scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/annotation/ensg2hgnc.txt .
 
-# If you are using windows, from the windows command line (not PuTTY):
+# If you are using windows, open a windows command prompt (not PuTTY).
+# You can find the command prompt by searching for "cmd" or "command" in your programs.
+# Then run:
 pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/bam_pass2/*_ReadsPerGene.out.tab .
 pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/annotation/ensg2hgnc.txt .
 ```
@@ -420,8 +436,8 @@ We'll now make a list of our samples and read in the first one
 samples = paste0(rep(c('Norm','IPF'), each = 8), rep(c(1:8), 2))
 
 ## Read in counts for the first sample and look at the head
-data = read.table(paste0('samples[1], '_ReadsPerGene.out.tab'), 
-			  header = F, stringsAsFactors = F, 
+data = read.table(paste0(samples[1], '_ReadsPerGene.out.tab'), 
+			  header = FALSE, stringsAsFactors = FALSE, 
 			  col.names = c('Gene','Unstranded','First','Second'))
 head(data)
 ```
@@ -448,8 +464,8 @@ Now we'll read in the other samples and combine them into the same data
 frame.
 ```
 for (sample in samples[2:length(samples)]) {
-    sampleData = read.table(paste0('bam_pass2/',sample,'_ReadsPerGene.out.tab'), 
-    header = F, stringsAsFactors = F, skip = 4)[,c(1,4)]
+    sampleData = read.table(paste0(sample,'_ReadsPerGene.out.tab'), 
+    header = FALSE, stringsAsFactors = FALSE, skip = 4)[,c(1,4)]
     colnames(sampleData) = c('Gene', sample)
     counts = merge(counts, sampleData, by = 'Gene')
 }
@@ -457,8 +473,8 @@ for (sample in samples[2:length(samples)]) {
 
 Let's add in the human-readable gene names and make those the row names.
 ```
-genes = read.table('annotation/ensg2hgnc.txt', 
-      header = F, stringsAsFactors = F, col.names = c('ENSG', 'HGNC'))
+genes = read.table('ensg2hgnc.txt', header = FALSE, 
+      stringsAsFactors = FALSE, col.names = c('ENSG', 'HGNC'))
 counts = merge(counts, genes, by.x = 'Gene', by.y = 'ENSG')
 rownames(counts) = paste(counts$HGNC, counts$Gene, sep = '_')
 counts = counts[, samples] # drop gene columns
