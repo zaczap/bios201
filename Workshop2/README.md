@@ -244,7 +244,7 @@ A overview of each column is described
 :question: **3.1 Where did this read map? What about its mate?**  
 :question: **3.2 What information do we know about this read based on its
 	   flag? You may want to use [Picard's Explain Flags
-	   tool](https://broadinstitute.github.io/picard/explain-flags.html)**
+	   tool](https://broadinstitute.github.io/picard/explain-flags.html).**
 
 Let's also take a look at a specific pair of reads:
 ```
