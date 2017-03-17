@@ -509,3 +509,6 @@ pheatmap(log2normCounts[top, ], show_rownames = TRUE, annotation_col = columnDat
 :question: **6.2 How does the outlier sample compare to the other samples
 	   in terms of SFTPA1 and SFTPA2, two lung-specific genes? What
 	   does that suggest?** 
+
+
+You can find the answers to the questions [here](https://github.com/zaczap/bios201/blob/master/Workshop2/Answers.md).
