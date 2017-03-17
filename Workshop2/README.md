@@ -5,7 +5,7 @@ Introduction
 ------------
 
 Today, we are going to process RNA sequencing data into gene expression
-values. We will be working with data from [a published study](http://journals.plos.org/plosone/article/file?type=supplementary&id=info:doi/10.1371/journal.pone.0097550.s002), comparing RNA seq from healthy lung samples to lung samples from patients with idiopathic pulmonary fibrosis (IPF).
+values. We will be working with data from [a published study](http://journals.plos.org/plosone/article/file?type=supplementary&id=info:doi/10.1371/journal.pone.0097550.s002) comparing RNA-seq from healthy lung samples to lung samples from patients with idiopathic pulmonary fibrosis (IPF).
 
 We have provided you with FASTQ files from 8 normal and 8 IPF
 samples. For this activity, we will be restricting our analysis to
@@ -65,10 +65,10 @@ cd workshop2
 1 Understanding gene annotation formats
 ----------------------------------------
 
-Let's first get familiar with a couple file formats used to specify gene
+Let's first get familiar with a couple of file formats used to specify gene
 annotations. Gene annotations are useful because they let us know where
 known and predicted genes are located in the genome, which parts are
-introns and which parts are exons. This gives us information about where
+introns, and which parts are exons. This gives us information about where
 we expect RNA-seq reads to map and which genes those reads likely come
 from. Additionaly, the position of exon-intron
 boundaries assist aligners when mapping reads that span multiple exons.
@@ -105,7 +105,7 @@ grep "SFTPA2" annotation/UCSC_table_browser_chr10.txt | column -t | less -S
 
 ### GTF/GFF format
 Gene Transfer Format (GTF) is an extension of the General Feature Format
-(GFF). Take a minute to read about those formats
+(GFF). Take a minute to read about these formats
 [here](http://genome.ucsc.edu/FAQ/FAQformat.html#format3). GTF files are
 used by many RNA-seq aligners and tools for counting the number of reads
 mapping to each gene. In contrast to the GenePred format, each "feature"
@@ -137,10 +137,10 @@ You should be able to identify the same transcripts as in the GenePred format.
 
 We will use STAR to align our RNA-seq reads. STAR performs best if you can
 provide it with a gene annotation (in GTF format) as it uses the
-information about known splice junctions. However, STAR also infers novel
-splice junctions based on the data, which it outputs. The tool suggests
+information to identify known splice junctions. However, STAR also infers unannotated
+splice junctions based on the data and outputs them. The authors of STAR suggest
 that after doing an initial alignment, you provide STAR with the junctions
-it has infered and rerun the mapping. This is what it calls 2-pass
+it has infered and re-run the mapping. This is called 2-pass
 mapping.
 
 Before aligning reads with STAR, we need to build the genome index.
@@ -174,8 +174,8 @@ The first three arguments are required. The rest are optional but we will
 use them to provide non-default values. The last two we will only use for
 the second-pass alignment.
 
-**NOTE:** There are *lots* of parameters that you can adjust. Most default
-parameters work well for us, but there is a note on the STARs homepage:
+**NOTE:** There are *many* parameters that you can adjust. Most default
+parameters work well for us, but there is a note on the STAR homepage:
 "This release was tested with the default parameters for human and mouse
 genomes. Please contact the author for a list of recommended parameters
 for much larger or much smaller genomes." Keep that in mind if you want to
@@ -269,8 +269,8 @@ Take a look at the CIGAR strings of these two reads. To understand them,
 We will now use the Integrative Genomics Viewer (IGV) to look at our
 alignments graphically. IGV requires bam files to be coordinate-sorted and
 indexed so let's do that first with samtools. Indexing the bam creates a
-separate file with a .bai suffix that contains information to make it easy
-for programs like iGV to quickly retrieve sections of the BAM file when
+separate file with a `.bai` suffix that contains information to make it easy
+for programs like IGV to quickly retrieve sections of the BAM file when
 the user provides genomic coordinates.
 
 ```
@@ -305,7 +305,7 @@ ssh <sunet>@corn.stanford.edu -X
 igv.sh
 ```
 Be patient while IGV lauches in a separate graphical window. This can take
-a bit of time. Once the IGV window appears, go to File -> Load from file.
+a bit of time. Once the IGV window appears, go to **File** -> **Load from file**.
 You should then navigate to and select `bam_pass2/Norm1_Aligned.out.sorted.bam`.
 
 ### Looking at the read pair we inspected in the bam file
@@ -338,7 +338,7 @@ purple ones to the reverse.
 
 ### Viewing a sashimi plot
 
-Sashimi plots are a common was of visualizing splicing events.
+Sashimi plots are a common way of visualizing splicing events.
 Search for gene "SMNDC1". Once it loads, right click the read area and
 select "Sashimi plot". A new window will appear with the plot.
 
@@ -347,7 +347,7 @@ select "Sashimi plot". A new window will appear with the plot.
 5 Generating mapping metrics with Picard
 -----------------------------------------
 
-Picard has a suite of tools for manipulating and summarizing bam
+Picard has a suite of tools for manipulating and summarizing BAM
 files. One particularly useful for for RNA-seq data is
 CollectRnaSeqMetrics and we'll run it here. It uses a refFlat file
 (similar to the genePred format above) that we downloaded from
@@ -355,8 +355,6 @@ CollectRnaSeqMetrics and we'll run it here. It uses a refFlat file
 subsetted to chromosome 10.
 
 In your initial terminal window, run:  
-(If you closed that first window when you logged in with -X to use IGV, you'll
-need to `cd workshop2` again.)
 ```
 java -jar $PICARD CollectRnaSeqMetrics \
      REF_FLAT=annotation/refFlat.chr10.txt \
@@ -364,9 +362,11 @@ java -jar $PICARD CollectRnaSeqMetrics \
      OUTPUT=bam_pass2/Norm1_Aligned.out.sorted.metrics.txt \
      STRAND_SPECIFICITY=SECOND_READ_TRANSCRIPTION_STRAND
 ```
+(If you closed that first window when you logged in with -X to use IGV, you'll
+need to `cd workshop2` again.)
 
 Let's take a look at the output. The following command will help produce
-the output in a format that's easier for us to read:
+the output in a format that is easier for us to read:
 ```
 cat bam_pass2/Norm1_Aligned.out.sorted.metrics.txt | \
     head -n 8 | tail -n 2 | sed 's/\t\t/\t.\t/g' | \
@@ -380,7 +380,7 @@ cat bam_pass2/Norm1_Aligned.out.sorted.metrics.txt | \
 6 Preliminary inspection of count data
 ---------------------------------------
 
-We will be looking at the data in R. We encourage you to use RStudio on
+We will be looking at the count data in R. We encourage you to use RStudio on
 your laptop.
 
 First we need to download the files we'll be working with. These are the
@@ -390,7 +390,7 @@ counts files that STAR generated for us.
 
 In the commands below, you need to replace your sunet ID and the path to
 your copy of workshop 2.  
-NOTE: You can first create and/or move to a folder where you want to put
+**NOTE**: You can first create and/or move to a folder where you want to put
 the files.  
 **Take note of where you download the files, we will need that information in a couple steps.**
 
@@ -407,7 +407,7 @@ pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/annotatio
 ```
 
 The above commands will download a file with gene name mappings and 16
-count files, the one you created for Norm1, as well as the ones
+count files: the one you created for Norm1, as well as the ones
 for the other samples that we have provided you with.
 
 Now start RStudio.
@@ -434,7 +434,7 @@ setwd('/path/to/downloaded/files')
 ## Insert the path to your files
 ```
 
-We'll now make a list of our samples and read in the first one
+We'll now make a list of our samples and read in the first one:
 ```
 samples = paste0(rep(c('Norm','IPF'), each = 8), rep(c(1:8), 2))
 
@@ -450,7 +450,7 @@ only includes read pairs where the first read maps to the strand of the
 gene, and 'Second' only includes pairs where the second reads maps to the
 gene's strand.
 
-You can see that the first four lines are counts of unmapped, unassigned
+You can see that the first four lines are counts of unmapped, unassigned,
 or ambigous reads. You'll also notice that 'First' has the most reads not
 assigned to any gene ('N_noFeature'). Together, these indicate that we have
 a stranded library where the second read maps to the gene's strand. You
