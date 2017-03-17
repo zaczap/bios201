@@ -360,7 +360,7 @@ cat bam_pass2/Norm1_Aligned.out.sorted.metrics.txt | \
     column -t | less -S
 ```
 
-:question: **5.1 What percentage of reads map to coding bases?**  
+:question: **5.1 What percentage of reads map to coding bases and UTR bases?**  
 :question: **5.2 What would you infer if that percentage was very low, say
 	   less than 5%?**
 
