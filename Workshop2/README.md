@@ -381,7 +381,8 @@ cat bam_pass2/Norm1_Aligned.out.sorted.metrics.txt | \
 ---------------------------------------
 
 We will be looking at the count data in R. We encourage you to use RStudio on
-your laptop.
+your laptop. If you haven't already, you'll need to install 
+[R](https://cran.rstudio.com/) and [RStudio Desktop](https://www.rstudio.com/products/rstudio/download/).
 
 First we need to download the files we'll be working with. These are the
 counts files that STAR generated for us.
@@ -396,19 +397,31 @@ the files.
 
 ```
 # If you are using Mac or Linux, from the terminal, run:
-scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/bam_pass2/*_ReadsPerGene.out.tab .
-scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/annotation/ensg2hgnc.txt .
+scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/bam_pass2/*_ReadsPerGene.out.tab .
+scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/annotation/ensg2hgnc.txt .
 
 # If you are using windows, open a windows command prompt (not PuTTY).
 # You can find the command prompt by searching for "cmd" or "command" in your programs.
 # Then run:
-pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/bam_pass2/*_ReadsPerGene.out.tab .
-pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/workshop2/annotation/ensg2hgnc.txt .
+pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/bam_pass2/*_ReadsPerGene.out.tab .
+pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/annotation/ensg2hgnc.txt .
+```
+
+For example, my commands look like this:
+```
+pwd  # to get the path to my workshop 2
+# /afs/ir/users/e/t/etsang/bios201/workshop2
+
+scp etsang@corn.stanford.edu:/afs/ir/users/e/t/etsang/bios201/workshop2/bam_pass2/*_ReadsPerGene.out.tab .
+scp etsang@corn.stanford.edu:/afs/ir/users/e/t/etsang/bios201/workshop2/annotation/ensg2hgnc.txt .
 ```
 
 The above commands will download a file with gene name mappings and 16
 count files: the one you created for Norm1, as well as the ones
 for the other samples that we have provided you with.
+
+If you have trouble getting the files through `scp`/`pscp` you can also
+download the files from [here](http://web.stanford.edu/class/bios201/workshop2/).
 
 Now start RStudio.
 
@@ -429,9 +442,13 @@ library(pheatmap)
 ```
 
 We need to move to the directory where the downloaded files are located.
+(As a side note, RStudio support tab completion and that can help you fill
+in the path.)
 ```
 setwd('/path/to/downloaded/files')
-## Insert the path to your files
+# e.g., on mac/linux: setwd('/Users/Emily/Documents/BIOS201/workshop2')
+# e.g., on windows: setwd('C:/Users/Emily/Documents/BIOS201/workshop2')
+# If you are using windows, make sure you put forward slashes '/' even if your path may be displayed as back slashes!
 ```
 
 We'll now make a list of our samples and read in the first one:
