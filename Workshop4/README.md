@@ -1,10 +1,10 @@
-# Workshop 4: Epigenomics data -- Visualization, Peak Calling, Quality Control, and Motif Finding
+# Workshop 4: Epigenomics data &mdash; Visualization, Peak Calling, Quality Control, and Motif Finding
 
-In today's workshop we will be analyzing some ATAC-seq data as an example of epigenomics data analysis. This analysis is fairly similar to what one might do with ChIP-seq or DNAse-seq data.  
+In today's workshop we will be analyzing some ATAC-seq data as an example of epigenomics data analysis. This analysis is fairly similar to what one might do with ChIP-seq or DNase-seq data.  
 
-We will be working with ATAC-seq data from two hematopoeitic cell types -- Natural Killer (NK) cells and Hematopoietic Stem Cells (HSC). For each cell type, we will use data from two different patients. This data is just a small subset of the data from this [paper](http://www.nature.com/ng/journal/v48/n10/abs/ng.3646.html).
+We will be working with ATAC-seq data from two hematopoeitic cell types &mdash; Natural Killer (NK) cells and Hematopoietic Stem Cells (HSC). For each cell type, we will use data from two different patients. This data is just a small subset of the data from this [paper](http://www.nature.com/ng/journal/v48/n10/abs/ng.3646.html).
 
-We have already aligned and filtered the reads -- we will be starting this analysis with bam files. Additionally, only reads mapping to chr4 have been retained, in the interest of speeding up all the analyses.   
+We have already aligned and filtered the reads &mdash; we will be starting this analysis with bam files. Additionally, only reads mapping to chr4 have been retained, in the interest of speeding up all the analyses.   
 
 ## Setup
 
@@ -37,11 +37,11 @@ cd workshop4
 
 ## Fragment size distribution
 
-First, lets take a look at the fragment size for each of our samples.  We will use the tool bamPEFragmentSize from the deepTools package. To learn more about this tool, read the [documentation](https://deeptools.readthedocs.io/en/latest/content/tools/bamPEFragmentSize.html).
+First, let's take a look at the fragment size for each of our samples.  We will use the tool `bamPEFragmentSize` from the deepTools package. To learn more about this tool, read the [documentation](https://deeptools.readthedocs.io/en/latest/content/tools/bamPEFragmentSize.html).
 
 The generic command we will be using is:
 ```
-# EXAMPLE FORMAT -- DO NOT RUN
+# EXAMPLE FORMAT - DO NOT RUN
 # bamPEFragmentSize -b <bamfiles> \
                   -hist <plot output filename> \
                   --maxFragmentLength <maximum fragment length>
@@ -51,13 +51,14 @@ The generic command we will be using is:
 To run this on all four of our bamfiles:
 
 ```
-bamPEFragmentSize -b *.bam -hist fragmentSizes.png --maxFragmentLength 500 -T "Fragment sizes of ATAC-seq data"
+bamPEFragmentSize -b *.bam -hist fragmentSizes.png --maxFragmentLength 500 \
+                  -T "Fragment sizes of ATAC-seq data"
 ```
 
 To look at our fragment sizes, we will take advantage of the "WWW" folder in your home directory. Copy the fragment sizes plot to that directory:
 
 ```
-cp fragmentSizes.png WWW/
+cp fragmentSizes.png ~/WWW/
 ```
 Now navigate in your web browser to  http://web.stanford.edu/~sunet/, filling in sunet with your own sunet id. You should see a list of files, including fragmentSizes.png.  Click on it to see the plot. 
 
@@ -114,7 +115,7 @@ cp *.bw ~/WWW/
 
 Now if you go to http://web.stanford.edu/~sunet/, fillling in sunet with your own sunet id, you will see a list of files.  Now enter http://web.stanford.edu/~sunet/Donor2596-NK.chr4.bw (again substituting sunet with your own id) into the `Paste URLs or data` box.  Then click `submit`. You will get taken to another screen, where you should click the `go` button next to view in `Genome Browser`. You should now see some data!
 
-Explore different options for displaying the data, selected from the dropdown box int he custom tracks section:
+Explore different options for displaying the data, selected from the dropdown box in the custom tracks section:
 
 ![UCSC input](images/track_options.png)
 
@@ -124,19 +125,22 @@ Use the same procedure to add tracks for the other three samples.  You can add t
 
 Play around with the zooming to view more or less of the data.
 
-Try adding the insertion tracks as well -- how do those compare?
+:question: Try adding the insertion track as well -- how does it compare to the coverage track for the same sample?
 
-
-## Aggregating coverage at TSS
+## Aggregating coverage at transcription start site (TSS)
 
 We're going to go back to the terminal, but keep your UCSC genome browser open -- we'll come back to it.
 
-We are now going to look at one type of QC plot -- aggregating ATAC-seq insertions at the TSS to see if there is an enrichment.  We will use the `computeMatrix` and `plotHeatmap` commands from deepTools. 
+We are now going to look at one type of QC plot &mdash; aggregating ATAC-seq insertions at the TSS to see if there is an enrichment.  We will use the `computeMatrix` and `plotHeatmap` commands from deepTools. 
 
 ```
-computeMatrix reference-point -S Donor2596-NK.ins.bw -R hg19.refGeneReviewedValidated.tss.chr4.bed -o Donor2596-NK.matrix.gz --referencePoint TSS --binSize 10 --missingDataAsZero -b 2000 -a 2000
+computeMatrix reference-point -S Donor2596-NK.ins.bw \
+  -R hg19.refGeneReviewedValidated.tss.chr4.bed \
+  -o Donor2596-NK.matrix.gz --referencePoint TSS \
+  --binSize 10 --missingDataAsZero -b 2000 -a 2000
 
-plotHeatmap -m Donor2596-NK.matrix.gz -out Donor2596-NK_heatmap.png --xAxisLabel 'Distance (bp)' --samplesLabel Insertions --zMin 0 -z ATAC
+plotHeatmap -m Donor2596-NK.matrix.gz -out Donor2596-NK_heatmap.png \
+  --xAxisLabel 'Distance (bp)' --samplesLabel Insertions --zMin 0 -z ATAC
 ```
 
 Copy `Donor2596-NK_heatmap.png` to your WWW folder and use your browser to take a look at the file.
@@ -145,7 +149,7 @@ Copy `Donor2596-NK_heatmap.png` to your WWW folder and use your browser to take 
 
 ## Peak calling
 
-The next step will be to call peaks for each sample.Peaks are areas of the genome where we have a pileup of signal -- in ATAC-seq these represent "accessible" regions of the genome. You could probably visually identify some of these regions in the genome browser.
+The next step will be to call peaks for each sample. Peaks are areas of the genome where we have a pileup of signal &mdash; in ATAC-seq these represent "accessible" regions of the genome. You can probably visually identify some of these regions in the genome browser.
 
 We will use the tool MACS2 to call peaks. With MACS2 you have the option of calling "narrow" or "broad" peaks. Generally, for TF ChIP-seq, "narrow" peaks are appropriate while for histone modification ChIP-seq "broad" peaks are appropriate. For ATAC-seq, peaks can vary in size and depending on what you want do with the peaks it may make sense to call either broad or narrow peaks.  For this tutorial, we will call narrow peaks using the `--call-summits` option to additionally call a "summit" in each peak-- this represents where the peak has the greatest intensity.  
 
@@ -162,7 +166,7 @@ Here we will use the following MACS2 options:
 | -g | genome size -- normally we would use hg19 but we have subset the genome to only include chr4 | 
 | --nomodel | don't compute model for fragment size |
 
-To learn more about these options and the other available options, read throught the [MACS2 documentation](https://github.com/taoliu/MACS)
+To learn more about these options and the other available options, read through the [MACS2 documentation](https://github.com/taoliu/MACS)
 
 For our first sample:
 
@@ -184,7 +188,7 @@ Several different files are output with a few formats.
 
 ## Visualizing Peaks :mount_fuji:
 
-We will focus on the narrowPeak and broadPeak files.  To learn about this format, read the [descriptions](https://genome.ucsc.edu/FAQ/FAQformat#format12).
+We will focus on the narrowPeak files.  To learn about this format, read the [description](https://genome.ucsc.edu/FAQ/FAQformat#format12).
 
 To be able to visualize the narrowPeak files in UCSC Genome Browser, we have to add a line at the top of the file indicating the track type.  We will also add a name.  
 
@@ -195,13 +199,13 @@ echo 'track type=narrowPeak name="Donor2596 NK Peaks"' | cat - Donor2596-NK_peak
 
 Then add the tracks to your UCSC genome browser session by pasting the appropriate link.
 
-:question: How many peaks are there in the window:  ?
+:question: How many peaks are there in the window: chr4:105,410,415-105,419,498? How many summits?
 
 ## Manipulating peak files
 
 We can use tools from the bedtools suite to do things like merge nearby peaks, find intersection between peaks in two different bam files and much more.
 
-Lets try finding the intersection between peak files -- the sections of peaks that are shared between two sets of peaks.   
+Let's try finding the intersection between peak files -- the sections of peaks that are shared between two sets of peaks.   
 
 Read the documentation for the bedtools intersect command, either using `bedtools intersect --help` on the command line or by navigating to the [online documentation](https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html).  
 
@@ -214,7 +218,7 @@ bedtools intersect -a Donor7256-HSC_peaks.narrowPeak -b Donor4983-HSC_peaks.narr
 
 ```
 
-Now lets get the union of all the peaks and merge overlapping peaks.  First, lets combine the peaks for all our samples into one file and sort the result using the bedtools sort command:
+Now let's get the union of all the peaks and merge overlapping peaks.  First, let's combine the peaks for all our samples into one file and sort the result using the bedtools sort command:
 
 ```
 cat *.narrowPeak | bedtools sort -i stdin > all_peaks.bed
@@ -222,17 +226,16 @@ cat *.narrowPeak | bedtools sort -i stdin > all_peaks.bed
 
 Read the documentation for the bedtools merge command, either using `bedtools merge --help` on the command line or by navigating to the [online documentation](https://bedtools.readthedocs.io/en/latest/content/tools/merge.html).  
 
-Use what you learned from the documenation of the merge command to merge overlapping peaks in `all_peaks.bed`.  
+Use what you learned from the documentation of the merge command to merge overlapping peaks in `all_peaks.bed`.  
 
 :question: How many peaks are in the merged peak files?
-
 
 ## Finding motifs in peaks
 
 We will next find motifs enriched in the NK peaks.  We will use the intersection of the peaks from both samples. For finding motifs we will use the findMotifsGenome.pl script from the HOMER package.  To learn more about the options and figure out the format of the output, read the [documentation](http://homer.ucsd.edu/homer/ngs/peakMotifs.html). Here is the command you would run, however it takes quite a while to run, so instead we will just explore the output.  
 
 ```
-# Slow -- do not run during workshop
+# Slow - do not run during workshop
 findMotifsGenome.pl NK_intersection.bed chr4.fa NK_motifs -size given
 
 findMotifsGenome.pl HSC_intersection.bed chr4.fa HSC_motifs -size given
@@ -247,11 +250,6 @@ The output have been added to the class WWW folder and can be found at http://we
 Use what you learned from the previous workshop about calling differential expression to calling differential peak accessibility.
 
 Find the motifs enriched in your set of differential peaks relative to all peaks.
-
-
-
-
-
 
 
 
