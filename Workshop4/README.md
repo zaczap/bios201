@@ -65,14 +65,6 @@ Now navigate in your web browser to  http://web.stanford.edu/~sunet/, filling in
 
 :question: What does the peak at around 200 bp likely represent?
 
-## Aggregating coverage at TSS
-
-
-```
-bamCoverage --bam Donor2596-NK.chr4.bam -o Donor2596-NK.ins.bw  --binSize 100 -bs 1 --Offset 5 5
-```
-
-
 ## Making coverage track
 
 For visualizing ATAC-seq data, it can be helpful to make a "coverage" track showing how many fragments map to a particular region of the genome. We will be using the `bamCoverage` tool from the deepTools suite to make coverage tracks. To learn about all the options, check out the [bamCoverage documenation](https://deeptools.readthedocs.io/en/latest/content/tools/bamCoverage.html).
@@ -93,10 +85,10 @@ Now run the bamCoverage for the other three bam files as well, changing the `--b
 We will also use the bamCoverage tool to create a per base track of ATAC-seq insertions. This is the precise base pair that represents the center of where the Tn5 transposon bound the DNA.  That position is 5 base pairs from the start of the read, so we use `--Offset 5 5` to get only that base pair.  We use `-binSize 1` to specfiy single base resolution:
 
 ```
-bamCoverage --bam Donor2596-NK.chr4.bam -o Donor2596-NK.ins.bw  --binSize 100 -binSize 1 --Offset 5 5
+bamCoverage --bam Donor2596-NK.chr4.bam -o Donor2596-NK.ins.bw  --binSize 1 --Offset 5 5
 ```
 
-Again run this command for the other three bam files as well, changing the `--bam` and `-o` arguments as appropriate.  
+This command takes a while so we'll run it only one sample.
 
 ## Using the UCSC Genome Browser to visualize the data
 
@@ -134,9 +126,24 @@ Play around with the zooming to view more or less of the data.
 
 Try adding the insertion tracks as well -- how do those compare?
 
-## Peak calling
+
+## Aggregating coverage at TSS
 
 We're going to go back to the terminal, but keep your UCSC genome browser open -- we'll come back to it.
+
+We are now going to look at one type of QC plot -- aggregating ATAC-seq insertions at the TSS to see if there is an enrichment.  We will use the `computeMatrix` and `plotHeatmap` commands from deepTools. 
+
+```
+computeMatrix reference-point -S Donor2596-NK.ins.bw -R hg19.refGeneReviewedValidated.tss.chr4.bed -o Donor2596-NK.matrix.gz --referencePoint TSS --binSize 10 --missingDataAsZero -b 2000 -a 2000
+
+plotHeatmap -m Donor2596-NK.matrix.gz -out Donor2596-NK_heatmap.png --xAxisLabel 'Distance (bp)' --samplesLabel Insertions --zMin 0 -z ATAC
+```
+
+Copy `Donor2596-NK_heatmap.png` to your WWW folder and use your browser to take a look at the file.
+
+:question:
+
+## Peak calling
 
 The next step will be to call peaks for each sample.Peaks are areas of the genome where we have a pileup of signal -- in ATAC-seq these represent "accessible" regions of the genome. You could probably visually identify some of these regions in the genome browser.
 
