@@ -241,9 +241,9 @@ findMotifsGenome.pl NK_intersection.bed chr4.fa NK_motifs -size given
 findMotifsGenome.pl HSC_intersection.bed chr4.fa HSC_motifs -size given
 ```
 
-The output have been added to the class WWW folder and can be found at http://web.stanford.edu/class/bios201/Workshop4. Take some time to explore the output, referring to the HOMER documentation for help with the format.   
+The output have been added to the class WWW folder and can be found at http://web.stanford.edu/class/bios201/workshop4. Take some time to explore the output, referring to the HOMER documentation for help with the format.   
 
-:question: What is the top known motif?
+:question: What is the the most enriched known motif in the NK peaks? In the HSC peaks?
 
 ## Finding differential peaks [optional challenge]
 
