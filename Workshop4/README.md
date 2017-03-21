@@ -229,9 +229,13 @@ Use what you learned from the documenation of the merge command to merge overlap
 
 ## Finding motifs in peaks
 
-We will next find motifs enriched in the NK peaks.  We will use the intersection of the peaks from both samples. For finding motifs we will use the findMotifsGenome.pl script from the HOMER package.  To learn more about the options, read the [documentation](http://homer.ucsd.edu/homer/ngs/peakMotifs.html). 
+We will next find motifs enriched in the NK peaks.  We will use the intersection of the peaks from both samples. For finding motifs we will use the findMotifsGenome.pl script from the HOMER package.  To learn more about the options and figure out the format of the output, read the [documentation](http://homer.ucsd.edu/homer/ngs/peakMotifs.html). 
 
+```
+findMotifsGenome.pl NK_intersection.bed hg19 NK_motifs -size given
+```
 
+:question: What is the top known motif?
 
 ## Finding differential peaks [optional challenge]
 
