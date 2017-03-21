@@ -70,8 +70,8 @@ setwd("<your_data_directory>")
 ## Exploratory Data Analysis
 
 Before we start testing for differential expression, it's always important to
-first visualize our data to make sure we . We'll start
-by looking at _counts.txt_, which contains the log-transformed IPF gene expression from last week with
+first visualize our data to determine whether it's clean. We'll start
+by looking at `counts.txt`, which contains the log-transformed IPF gene expression from last week with
 some simulated sequencing batch effects.
 
 Read in the matrix of log-transformed gene expression counts. 
