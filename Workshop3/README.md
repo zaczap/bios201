@@ -17,11 +17,11 @@ We'll use the R package _DESeq2_ to identify differentially expressed genes.
 
 This workshop will enable you to do the following:
 
-* Compare expression across samples and search for outliers
+* Compare expression across samples
 * Perform principal component analysis (PCA)
-* Identify differentially expressed genes with DESeq2
 * Remove the effects of known experimental confounders
-* Verify that DESeq2 results make sense
+* Identify differentially expressed genes with DESeq2
+* Verify and follow up DESeq2 results
 
 ## Setup
 
