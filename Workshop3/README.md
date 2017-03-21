@@ -1,4 +1,4 @@
-### Workshop 3: Differential expression analysis of RNA-seq data
+# Workshop 3: Differential expression analysis of RNA-seq data
 
 ## Introduction
 
