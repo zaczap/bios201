@@ -154,7 +154,7 @@ in observing. In some of the worst cases, researchers have mistaken batch effect
 signal and didn't notice this problem until long after publication. Luckily, there are several
 precautions we can take to minimize the risk of false results due to batch effects.
 
-# Loading covariates
+### Loading covariates
 
 It's always a good idea to note which samples were sequenced on which sequencing run,
 as well as other important metadata. We've supplied a file `covariates.txt` that contains
@@ -169,7 +169,7 @@ Take a look at the covariates.
 :question: How many IPF females are included in this dataset?
 
 
-# Principal Component Analysis
+### Principal Component Analysis
 
 A method called [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis), 
 or PCA, is used to detect and visualize batch effects in sequencing data. 
@@ -306,7 +306,7 @@ status <- c(rep("Norm", 7), rep("IPF", 8))
 boxplot(as.numeric(log_counts[rownames(log_counts)=="ENSG00000170962",]) ~ status)
 ```
 
-# Following up results
+### Following up results
 
 ENSG00000170962 isn't a very descriptive name. Look up this gene on 
 [GeneCards](http://www.genecards.org/cgi-bin/carddisp.pl?gene=PDGFD&keywords=ENSG00000170962)
