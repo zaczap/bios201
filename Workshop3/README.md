@@ -219,6 +219,7 @@ plot(pca$rotation[,1], pca$rotation[,2], col=color_seqbatch, pch=16)
 
 :question: Which variable (disease status or sequencing batch) causes a stronger
 clustering effect in our data?
+
 :question: Which of the principal components (#1 or #2) separates the samples
 by this variable?
 
@@ -277,6 +278,7 @@ diseased individuals relative to healthy individuals, plotted against the mean e
 Points plotted in red are significantly differentially expressed between samples. 
 
 :question: What is the relationship between the mean expression and the magnitude of log fold change?
+
 :question: Do you see more highly overexpressed or underexpressed genes?
 
 DESeq can also correct for known covariates such as age, sex, or demographic group.
@@ -332,4 +334,4 @@ res2[rownames(res2) == "ENSG00000096696",]$pvalue
 :question: Which of these two genes has greater differential expression in our cohort?
 
 To view the original code used by Tracy Nance for this analysis, see
-[https://github.com/datapixie/ipf/blob/master/runDESeq/runDESeq.R].
+https://github.com/datapixie/ipf/blob/master/runDESeq/runDESeq.R.
