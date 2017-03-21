@@ -109,7 +109,7 @@ cor(log_counts[,1], log_counts[,3])
 
 Now, modify the previous code to make a scatterplot comparing 
 the expression in a healthy sample and a diseased sample. (Remember, you can
-select the $$n$$th column of your `log_counts` matrix by typing `log_counts[,n]`).
+select the _n_-th column of your `log_counts` matrix by typing `log_counts[,n]`).
 
 :question: Which pair of samples has greater correlation?
 
