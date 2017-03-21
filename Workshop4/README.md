@@ -141,7 +141,7 @@ plotHeatmap -m Donor2596-NK.matrix.gz -out Donor2596-NK_heatmap.png --xAxisLabel
 
 Copy `Donor2596-NK_heatmap.png` to your WWW folder and use your browser to take a look at the file.
 
-:question:
+:question: What is the approximate width of the peak at the TSS?
 
 ## Peak calling
 
@@ -229,17 +229,20 @@ Use what you learned from the documenation of the merge command to merge overlap
 
 ## Finding motifs in peaks
 
-We will next find motifs enriched in the NK peaks.  We will use the intersection of the peaks from both samples. For finding motifs we will use the findMotifsGenome.pl script from the HOMER package.  To learn more about the options and figure out the format of the output, read the [documentation](http://homer.ucsd.edu/homer/ngs/peakMotifs.html). 
+We will next find motifs enriched in the NK peaks.  We will use the intersection of the peaks from both samples. For finding motifs we will use the findMotifsGenome.pl script from the HOMER package.  To learn more about the options and figure out the format of the output, read the [documentation](http://homer.ucsd.edu/homer/ngs/peakMotifs.html). Here is the command you would run, however it takes quite a while to run, so instead we will just explore the output.  
 
 ```
-findMotifsGenome.pl NK_intersection.bed hg19 NK_motifs -size given
+# Slow -- do not run during workshop
+findMotifsGenome.pl NK_intersection.bed chr4.fa NK_motifs -size given
+
+findMotifsGenome.pl HSC_intersection.bed chr4.fa HSC_motifs -size given
 ```
+
+The output have been added to the class WWW folder and can be found at http://web.stanford.edu/class/bios201/Workshop4. Take some time to explore the output, referring to the HOMER documentation for help with the format.   
 
 :question: What is the top known motif?
 
 ## Finding differential peaks [optional challenge]
-
-
 
 Use what you learned from the previous workshop about calling differential expression to calling differential peak accessibility.
 
