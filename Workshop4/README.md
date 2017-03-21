@@ -251,6 +251,10 @@ Use what you learned from the previous workshop about calling differential expre
 
 Find the motifs enriched in your set of differential peaks relative to all peaks.
 
+## Learning more
+
+The page https://github.com/crazyhottommy/ChIP-seq-analysis has links to a lot of resources for analysis of ChIP-seq, ATAC-seq, and other epigenomics data types.
+
 
 
 
