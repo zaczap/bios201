@@ -6,6 +6,18 @@ We will be working with ATAC-seq data from two hematopoeitic cell types &mdash; 
 
 We have already aligned and filtered the reads &mdash; we will be starting this analysis with bam files. Additionally, only reads mapping to chr4 have been retained, in the interest of speeding up all the analyses.   
 
+## Goals
+
+- Plot fragment size distribution
+- Make coverage and insertion tracks
+- Visualize coverage in UCSC genome browser
+- Plot aggregate insertion profile at transcription start sites
+- Call peaks
+- Visualize peaks in UCSC genome browser
+- Manipulate peak files &mdash; intersections and merges
+- Find motifs enriched in peaks
+- Differential accessibility [optional] 
+
 ## Setup
 
 Follow the setup steps outlined in the first workshop.
