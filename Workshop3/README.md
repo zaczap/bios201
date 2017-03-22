@@ -70,7 +70,7 @@ setwd("<your_data_directory>")
 ## Exploratory Data Analysis
 
 Before we start testing for differential expression, it's always important to
-first visualize our data to determine whether it's clean. We'll start
+first visualize our data and perform quality control checks. We'll start
 by looking at `counts.txt`, which contains the log-transformed IPF gene expression from last week with
 some simulated sequencing batch effects.
 
@@ -138,7 +138,7 @@ in our data.
 As we noticed in the last section, some of the similar samples cluster together,
 but we don't observe two well-defined groups of diseased and healthy samples.
 In this case, it's because we've spiked in a simulated sequencing batch effect, which
-causes some of the samples from the same sequencing run to appear more biologically
+causes some of the samples from the same sequencing run to appear more
 similar than they really are.
 
 [Batch effects](http://www.molmine.com/magma/global_analysis/batch_effect.html) are
@@ -247,19 +247,27 @@ It can be particularly tricky when the experimental covariates are not recorded;
 however, software tools such as [PEER](https://www.ncbi.nlm.nih.gov/pubmed/22343431) can 
 be used to detect unknown covariates.
 
-To simplify the next part of the analysis, load the denoised, log-transformed expression counts from
-`counts_denoised.txt` and use these counts for the remainder of the workshop.
-
-```
-counts = read.table("counts_denoised.txt")
-```
-
 
 ## Differential expression
 
 Now that we've eliminated batch effects, we're ready to test for differentially expressed genes.
 We achieve this using an R tool called [DESeq2](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8)
 that quantifies the extent to which gene expression changes between conditions.
+
+As input, DESeq2 takes non-normalized counts values. DESeq2 statistically models the
+probability of differential expression, which involves placing greater confidence on
+differentially expressed genes for which a greater number of counts are observed across
+samples. To simplify this part of the analysis, we've supplied the original read count data
+from last week's exercise with simulated sequencing batch effects removed. It is possible that
+other sequencing batch effects still remain, since we've never explicitly corrected these. Normally we
+should attempt to detect these batch effects using a tool such as PEER for identifying "hidden" effects;
+for today's workshop, we'll ignore this aspect of the analysis.
+
+Load the denoised expression counts from `counts_denoised.txt` and use these counts for the remainder of the workshop.
+
+```
+counts = read.table("counts_denoised.txt")
+```
 
 Run DESeq using the following commands:
 
@@ -269,7 +277,7 @@ dds <- DESeqDataSetFromMatrix(countData <- counts,
                               colData <- covariates,
                               design = ~ factor(status, levels=c("Norm","IPF")))
 dds <- DESeq(dds, betaPrior=FALSE)
-res = results(dds)
+res_nosex = results(dds)
 plotMA(dds)
 ```
 
@@ -281,18 +289,48 @@ Points plotted in red are significantly differentially expressed between samples
 
 :question: Do you see more highly overexpressed or underexpressed genes?
 
-DESeq can also correct for known covariates such as age, sex, or demographic group.
-Since we've already eliminated the strongest covariate effects from the data, we won't perform
-these corrections in our current analysis.
+We can also directly correct for known covariates using DESeq2. Here we correct
+any effects due to the individual's sex. Note that we've added an additional
+term to the design formula.
+
+```
+dds <- DESeqDataSetFromMatrix(countData <- counts,
+                              colData <- covariates,
+                              design = ~ sex + factor(status, levels=c("Norm","IPF")))
+dds <- DESeq(dds, betaPrior=FALSE)
+res = results(dds)
+plotMA(dds)
+```
+
+Compare the strength of results between the sex-corrected DESeq2 run and the
+run with no covariates corrected.
+
+```
+plot(log(res_nosex$pvalue, base=10), log(res$pvalue, base=10), xlim=c(-30,0), ylim=c(-30,0),
+            xlab="p-value, No sex correction", ylab="p-value, sex correction")
+abline(a=0,b=1)
+abline(a=-5,b=0,lty=3,col="red")
+abline(v=-5,lty=3,col="red")
+```
+
+:question: Are there any genes that become significant after correcting for sex? (Use the
+dashed red line as a cutoff for significance.) Do any that were initially significant become
+insignificant after correction?
 
 Let's see how many genes are differentially expresssed. DESeq provides two different p-values, `pvalue`
 and `padj`. When searching for differential expression across many genes, you should always use `padj`,
 which corrects for [multiple testing](http://www.stat.berkeley.edu/~mgoldman/Section0402.pdf).
+
 ```
+sum(res_nosex$padj < 0.05, na.rm=TRUE)
 sum(res$padj < 0.05, na.rm=TRUE)
 ```
 
-:question: How many genes are differentially expressed at an adjusted p-value of 0.05?
+:question: How many genes are differentially expressed at an adjusted p-value of 0.05 in
+each DESeq2 run? Do we find more differentially expressed genes before or after removing
+the sex effect?
+
+For the remainder of this workshop, we'll use only the results with the sex effect removed.
 
 What are our top differentially expressed genes?
 
@@ -325,10 +363,12 @@ Test these genes to see if they're replicated in our analysis.
 
 ```
 # MUC5B
-res2[rownames(res2) == "ENSG00000117983",]$pvalue 
+res[rownames(res) == "ENSG00000117983",]$pvalue 
+```
 
-# DSP
-res2[rownames(res2) == "ENSG00000096696",]$pvalue 
+```
+# Try the next one on your own. Look up the ENSG identifier for
+# DSP online, and then get that row from the DESeq2 results.
 ```
 
 :question: Which of these two genes has greater differential expression in our cohort?
