@@ -11,8 +11,11 @@ Reads spanning nucleosomes.
 :question: What is the max coverage for each sample in the chr4:105,079,645-105,815,457 window?
 
 Donor2596-NK: 1109
+
 Donor5483-NK:  2412
+
 Donor4983-HSC: 883
+
 Donor7256-HSC: 853
 
 
@@ -56,5 +59,6 @@ bedtools merge -i all_peaks.bed | wc -l
 :question: What is the the most enriched known motif in the NK peaks? In the HSC peaks?
 
 In NK:  ETS
+
 In HSC: CTCF
 
