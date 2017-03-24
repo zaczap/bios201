@@ -312,10 +312,10 @@ Be patient while IGV lauches in a separate graphical window. This can take
 a bit of time. Once the IGV window appears, go to **File** -> **Load from file**.
 You should then navigate to and select `bam_pass2/Norm1_Aligned.out.sorted.bam`.
 
-NOTE: If you have trouble running IGV through corn, try installing
+**NOTE**: If you have trouble running IGV through corn, try installing
 [IGV](http://software.broadinstitute.org/software/igv/download) on you
 laptop. If you run IGV from you laptop, go to **File** -> **Load from
-URL**. Enter "http://web.stanford.edu/class/bios201/workshop2_bam/Norm1_Aligned.out.sorted.bam".
+URL**. Enter http://web.stanford.edu/class/bios201/workshop2_bam/Norm1_Aligned.out.sorted.bam.
 
 ### Looking at the read pair we inspected in the bam file
 
