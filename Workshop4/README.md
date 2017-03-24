@@ -265,7 +265,17 @@ The output have been added to the class WWW folder and can be found at http://we
 
 ## Finding differential peaks [optional challenge]
 
-Use what you learned from the previous workshop about calling differential expression to calling differential peak accessibility.
+The `multicov` command from bedtools can be used to count how many reads aligned to each peaks:
+
+```
+bedtools multicov -bams Donor2596-NK.chr4.bam Donor5483-NK.chr4.bam Donor7256-HSC.chr4.bam Donor4983-HSC.chr4.bam \
+  -bed all_peaks.merged.bed > peak_counts.bed
+
+# Replace all_peaks.merged.bed with whatever you called the merged peaks
+```
+This command will create a file with the counts of reads for each bamfile
+
+Use what you learned from the previous workshop about calling differential expression to calling differential peak accessibility. The approach is pretty similar for ATAC-seq than for RNA-seq, you would just use read counts in peaks rather than read counts in genes.
 
 Find the motifs enriched in your set of differential peaks relative to all peaks.
 
