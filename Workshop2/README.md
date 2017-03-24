@@ -288,6 +288,10 @@ Connection -\> SSH -\> X11 and check the box labeled "Enable X11
 forwarding". Then press the "Open" button to open an SSH connection with
 X11 forwarding, used for showing graphical interfaces over a remote connection.
 
+If you are using a Mac, you need to have
+[XQuartz](https://www.xquartz.org/) installed. You may need to restart
+your computer after installing XQuartz for it to work.
+
 Then we want to launch IGV. To do this on corn, open **a new terminal window**
 and `ssh` again, this time providing -X. Then run through the remaining
 [setup
@@ -307,6 +311,11 @@ igv.sh
 Be patient while IGV lauches in a separate graphical window. This can take
 a bit of time. Once the IGV window appears, go to **File** -> **Load from file**.
 You should then navigate to and select `bam_pass2/Norm1_Aligned.out.sorted.bam`.
+
+NOTE: If you have trouble running IGV through corn, try installing
+[IGV](http://software.broadinstitute.org/software/igv/download) on you
+laptop. If you run IGV from you laptop, go to **File** -> **Load from
+URL**. Enter "http://web.stanford.edu/class/bios201/workshop2_bam/Norm1_Aligned.out.sorted.bam".
 
 ### Looking at the read pair we inspected in the bam file
 
