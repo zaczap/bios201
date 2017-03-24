@@ -49,7 +49,7 @@ cd workshop4
 
 ## Fragment size distribution
 
-First, let's take a look at the fragment size for each of our samples.  We will use the tool `bamPEFragmentSize` from the deepTools package. To learn more about this tool, read the [documentation](https://deeptools.readthedocs.io/en/latest/content/tools/bamPEFragmentSize.html).
+First, let's take a look at the fragment size for each of our samples.  We will use the tool `bamPEFragmentSize` from the deepTools package. The [deepTools package](https://deeptools.readthedocs.io/en/latest/), developed by the Bioinformatics Facility at the Max Planck Institute for Immunobiology and Epigenetics, is a suite of tools for working with next generation sequencing.  To learn more about this tool, read the [documentation](https://deeptools.readthedocs.io/en/latest/content/tools/bamPEFragmentSize.html).
 
 The generic command we will be using is:
 ```
@@ -163,7 +163,7 @@ Copy `Donor2596-NK_heatmap.png` to your WWW folder and use your browser to take 
 
 The next step will be to call peaks for each sample. Peaks are areas of the genome where we have a pileup of signal &mdash; in ATAC-seq these represent "accessible" regions of the genome. You can probably visually identify some of these regions in the genome browser.
 
-We will use the tool MACS2 to call peaks. With MACS2 you have the option of calling "narrow" or "broad" peaks. Generally, for TF ChIP-seq, "narrow" peaks are appropriate while for histone modification ChIP-seq "broad" peaks are appropriate. For ATAC-seq, peaks can vary in size and depending on what you want do with the peaks it may make sense to call either broad or narrow peaks.  For this tutorial, we will call narrow peaks using the `--call-summits` option to additionally call a "summit" in each peak-- this represents where the peak has the greatest intensity.  
+We will use the tool MACS2 to call peaks. [MACS2](https://github.com/taoliu/MACS), developed by Tao Liu (originally in Shirley Liu's group), has tools for modeling ChIP-seq data and for calling both "narrow" and "broad" peaks. Generally, for TF ChIP-seq, "narrow" peaks are appropriate while for histone modification ChIP-seq "broad" peaks are appropriate. For ATAC-seq, peaks can vary in size and depending on what you want do with the peaks it may make sense to call either broad or narrow peaks. For this tutorial, we will call narrow peaks using the `--call-summits` option to additionally call a "summit" in each peak-- this represents where the peak has the greatest intensity.  
 
 Here we will use the following MACS2 options:
 
