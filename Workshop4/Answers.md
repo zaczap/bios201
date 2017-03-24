@@ -10,6 +10,10 @@ Reads spanning nucleosomes.
 
 :question: What is the max coverage for each sample in the chr4:105,079,645-105,815,457 window?
 
+Donor2596-NK: 1109
+Donor5483-NK:  2412
+Donor4983-HSC: 883
+Donor7256-HSC: 853
 
 
 :question: Try adding the insertion track as well -- how does it compare to the coverage track for the same sample?
