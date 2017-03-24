@@ -1,5 +1,7 @@
 # Workshop 4: Epigenomics data &mdash; Visualization, Peak Calling, Quality Control, and Motif Finding
 
+**Before leaving class today, please fill out this [anonymous feedback form](https://goo.gl/forms/qyDvtfPletWNhbpj2) with your feedback on this BIOS201 course**
+
 In today's workshop we will be analyzing some ATAC-seq data as an example of epigenomics data analysis. This analysis is fairly similar to what one might do with ChIP-seq or DNase-seq data.  
 
 We will be working with ATAC-seq data from two hematopoeitic cell types &mdash; Natural Killer (NK) cells and Hematopoietic Stem Cells (HSC). For each cell type, we will use data from two different patients. This data is just a small subset of the data from this [paper](http://www.nature.com/ng/journal/v48/n10/abs/ng.3646.html).
@@ -256,6 +258,10 @@ findMotifsGenome.pl HSC_intersection.bed chr4.fa HSC_motifs -size given
 The output have been added to the class WWW folder and can be found at http://web.stanford.edu/class/bios201/workshop4. Take some time to explore the output, referring to the HOMER documentation for help with the format.   
 
 :question: What is the the most enriched known motif in the NK peaks? In the HSC peaks?
+
+## Feedback form
+
+**Before leaving class today, please fill out this [anonymous feedback form](https://goo.gl/forms/qyDvtfPletWNhbpj2) with your feedback on this BIOS201 course**
 
 ## Finding differential peaks [optional challenge]
 
