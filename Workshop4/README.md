@@ -49,7 +49,7 @@ cd workshop4
 
 ## Fragment size distribution
 
-First, let's take a look at the fragment size for each of our samples.  We will use the tool `bamPEFragmentSize` from the deepTools package. The [deepTools package](https://deeptools.readthedocs.io/en/latest/), developed by the Bioinformatics Facility at the Max Planck Institute for Immunobiology and Epigenetics, is a suite of tools for working with next generation sequencing.  To learn more about this tool, read the [documentation](https://deeptools.readthedocs.io/en/latest/content/tools/bamPEFragmentSize.html).
+First, let's take a look at the fragment size for each of our samples.  We will use the tool `bamPEFragmentSize` from the deepTools package. The [deepTools package](https://deeptools.readthedocs.io/en/latest/), developed by the Bioinformatics Facility at the Max Planck Institute for Immunobiology and Epigenetics, is a suite of tools for working with and visualizing next generation sequencing data. To learn more about the `bamPEFragmentSize` tool, read the [documentation](https://deeptools.readthedocs.io/en/latest/content/tools/bamPEFragmentSize.html).
 
 The generic command we will be using is:
 ```
