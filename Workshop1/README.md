@@ -42,8 +42,8 @@ While we have provided all the software for you on our teaching server, you may 
 
 First you will have to connect to the server we have set up for you:
 
-	ssh <sunetID>@corn.stanford.edu
-	# e.g. ssh zappala@corn.stanford.edu
+	ssh <sunetID>@rice.stanford.edu
+	# e.g. ssh zappala@rice.stanford.edu
 
 Once connected, run:
 
