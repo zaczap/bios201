@@ -56,6 +56,12 @@ If the response is `tcsh`, run the following command:
 If the response is `bash`, run the following command:
 
 	source /afs/ir/class/bios201/setup/setup_bash.sh 
+	
+(In case you're interested what's going on here...
+Most command-line tools are run using an _executable_ file, a file that contains the instructions needed for the computer to run a task.
+The setup commands above configure your session so that you can run these tools using short commands like `$PICARD` instead of typing
+out the full path to the executable file every time, e.g. `/afs/ir/users/e/t/etsang/software/bin/picard.jar`. When you're running your own
+analysis, these setup commands aren't necessary; instead, you can just include the full path name.)
 
 Finally, copy the workshop materials and `cd` into it (**NOTE**: copying the materials may take a minute or two):
 
