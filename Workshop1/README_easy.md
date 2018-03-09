@@ -473,6 +473,8 @@ Congratulations! You've aligned a genome, called variants, and filtered low-qual
 
 ## Bonus activity
 
+(Optional, on your own time):
+
 If you want more practice calling variants in DNA sequencing data, download the 1000 Genomes
 FASTQ files for your favorite samples, publicly available at ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/data/.
 Descriptions of the ancestry for each sample are given [here](http://www.internationalgenome.org/data-portal/sample).
