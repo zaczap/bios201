@@ -2,9 +2,15 @@
 
 ## Answers
 
-**Of the 4 reads you just looked at, did you see any obvious problems?**
+**How many reads are displayed using each of these commands?**
 
->The first read in the R2 file is clearly a *bad* read 
+>Each of the `head` command displays 2 reads.
+
+**Of the reads you viewed, which has the highest quality? Which has the lowest?**
+
+>The first read in the R2 file is clearly a *bad* read, based on the quality score and
+the fact that most bases are called as N's, meaning the base is unknown.
+The second read in that file is quite good, though.
 
 **What happens to the quality of sequenced bases in later cycles?**   
 
@@ -23,13 +29,20 @@
 
 >93.86% of the reads
 
+**How many of the reads in `NA12878.bam` were marked as PCR duplicates?**
+>95
+
+** What might happen in our subsequent variant calling if we failed to remove these reads?**
+>We might call non-existent variants due to the appearance that there's strong of evidence for them, when
+in fact we're just seeing many PCR copies of the same starting fragment.
+
+**Now that you've recalibrated your alignment files, which file contains the calibrated
+alignment for NA12891?**
+>NA12891.markduplicates.rg.bqsr.bam
+
 **How many variants are in the joint VCF file?** 
 
 >201 variants
-
-**How many sites were not phased?** 
-
->10 variants
 
 **What do the above filters do?**
 
@@ -38,13 +51,16 @@
 >FS filters out variants with extreme strand bias; 
 >MQ filters out sites where the supporting reads had generally poor mapping qualities 
 
+**Which would we change if we wanted to require greater read depth?**
+>We would increase the DP filter.
+
 **How many variants are in the filtered VCF file?**  
 
 >134 variants
 
 **For the variant at 17:41204377, what are the ref allele and alt alleles?**  
 
->chr17:g.41204377A>G
+>A>G
 
 **For the variant at 17:41204377, how many of the individuals were heterozygous?**   
 

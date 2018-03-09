@@ -1,9 +1,5 @@
 # Workshop 1: Variant calling from DNA sequencing data
 
-The exercises in this tutorial require you to create your own commands to run command-line bioinformatics tools.
-To get the most from the tutorial, we recommend that you spend some time thinking about how to form these commands, 
-and experiment to see what does and doesn’t work. However, if you get stuck or you just need to see the 
-fully-formed commands right away, you can instead view [this](https://github.com/zaczap/bios201/tree/master/Workshop1/README_easy.md) version of the tutorial.
 The answers to the in-tutorial questions are given [here](https://github.com/zaczap/bios201/tree/master/Workshop1/Answers.md).
 
 _For non-Stanford students_:
@@ -115,10 +111,9 @@ for the `fastqc` command are summarized here:
 
 **NOTE:** We are only going to perform QC on NA12878; the other samples are already QC'ed and trimmed.
 
-Using the format described above, run fastQC on the fastq files from NA12878. `<output_dir>` can be 
-whatever you want; it’s the name of a new folder where your results will be placed. `format` should 
-be `fastq`. (Hint: if you forget the names of the input files, you can use `ls` to view all files in 
-the current working directory.)
+And now let's run FASTQC:
+
+	fastqc --outdir fastqc --format fastq NA12878_R1.fastq NA12878_R2.fastq
 
 This should run pretty quickly. When it's done, let's go look at the results:
 
@@ -167,12 +162,14 @@ The relevant fields for us right now are here:
 
 	# note: the adapter sequence is the reverse complement of the actual adapter sequence
 
-TODO: Using the above command as a template, with the adapters mentioned above, run `cutadapt` on the NA12878 samples, 
-using the following settings:
+So let's run the actual command (**Hint**: You can copy and paste these code segments instead of typing them):
 
-* Minimum base quality: 10
-* Minimum read length: 30
-
+	cutadapt -q 10 --minimum-length 30 \
+		-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC  \
+		-A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCATT \
+		-o NA12878_R1.qc.trimmed.fastq \
+		-p NA12878_R2.qc.trimmed.fastq \
+		NA12878_R1.fastq NA12878_R2.fastq
 :question: **How many read pairs were there before/after trimming?**
 
 <!-- before: 10,844, after: 10,336 -->
@@ -212,17 +209,25 @@ Let's do that for NA12878 (normally this can take some time, but we have only gi
 	bwa mem grch37.fa NA12878_R1.qc.trimmed.fastq NA12878_R2.qc.trimmed.fastq \
 		| samtools sort --output-fmt BAM > NA12878.bam
 
+	bwa mem grch37.fa NA12891_R1.qc.trimmed.fastq NA12891_R2.qc.trimmed.fastq \
+		| samtools sort --output-fmt BAM > NA12891.bam
+
+	bwa mem grch37.fa NA12892_R1.qc.trimmed.fastq NA12892_R2.qc.trimmed.fastq \
+		| samtools sort --output-fmt BAM > NA12892.bam
+        
 This command first aligns the trimmed FASTQ reads to the reference genome. It then
 uses the pipe `|` operator to pass the results into `samtools`, which uses the `sort`
 command to sort the reads by the order in which they appear in the genome. The resulting
 file is a sorted list of reads in a compressed alignment file, called a BAM.
 
-Now form the commands yourself to repeat this process for the next two samples.
-
 We can see various statistics about each of the alignments by running `samtools flagstat`.
 
-:question: **What percentage of reads for NA12878 were successfully mapped?** (Hint: Don't forget to tell `samtools`
-which BAM file it should look at.) 
+	# to learn about samtools, run: man samtools
+	samtools flagstat NA12878.bam
+	samtools flagstat NA12891.bam
+	samtools flagstat NA12892.bam
+
+:question: **What percentage of reads for NA12878 were successfully mapped?**
 <!-- 93.86% -->
 
 If you're interested in seeing the sorted alignment file, you can do this using `samtools view NA12878.bam | less -S`.
