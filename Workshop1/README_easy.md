@@ -85,6 +85,7 @@ Now let's take a look at a few FASTQ files.
 	head -8 NA12878_R2.fastq
 
 :question: **How many reads are displayed using each of these commands?**
+
 :question: **Of the reads you viewed, which has the highest quality? Which has the lowest?**
 
 <!-- The first one in R2 is BAD -->
