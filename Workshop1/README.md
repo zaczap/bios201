@@ -152,10 +152,7 @@ low-quality bases using the tool `cutadapt`:
 
 The relevant fields for us right now are here:
 
-	cutadapt -q <minimum_quality> --minimum-length <minimum_length>
-		-a <adapter on first read>
-		-A <adapter on second read>
-		-o <r1_trimmed_fastq> -p <r2_trimmed_fastq> <r1_fastq> <r2_fastq>
+	cutadapt -q <minimum_quality> --minimum-length <minimum_length> -a <adapter on first read> -A <adapter on second read> -o <r1_trimmed_fastq> -p <r2_trimmed_fastq> <r1_fastq> <r2_fastq>
 
 	# <minimum_quality> is the minimum base quality to allow (trimmed otherwise)
 	# <minimum_length> is the minimum length both pairs of reads need to be to be included
