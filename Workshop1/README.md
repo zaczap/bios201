@@ -2,7 +2,7 @@
 
 The exercises in this tutorial require you to create your own commands to run command-line bioinformatics tools.
 To get the most from the tutorial, we recommend that you spend some time thinking about how to form these commands, 
-and experiment to see what does and doesn’t work. However, if you get stuck or you just need to see the 
+and experiment to see what does and doesnâ€™t work. However, if you get stuck or you just need to see the 
 fully-formed commands right away, you can instead view [this](https://github.com/zaczap/bios201/tree/master/Workshop1/README_easy.md) version of the tutorial.
 The answers to the in-tutorial questions are given [here](https://github.com/zaczap/bios201/tree/master/Workshop1/Answers.md).
 
@@ -89,6 +89,7 @@ Now let's take a look at a few FASTQ files.
 	head -8 NA12878_R2.fastq
 
 :question: **How many reads are displayed using each of these commands?**
+
 :question: **Of the reads you viewed, which has the highest quality? Which has the lowest?**
 
 <!-- The first one in R2 is BAD -->
@@ -116,7 +117,7 @@ for the `fastqc` command are summarized here:
 **NOTE:** We are only going to perform QC on NA12878; the other samples are already QC'ed and trimmed.
 
 Using the format described above, run fastQC on the fastq files from NA12878. `<output_dir>` can be 
-whatever you want; it’s the name of a new folder where your results will be placed. `format` should 
+whatever you want; itâ€™s the name of a new folder where your results will be placed. `format` should 
 be `fastq`. (Hint: if you forget the names of the input files, you can use `ls` to view all files in 
 the current working directory.)
 
