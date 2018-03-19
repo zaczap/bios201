@@ -1,6 +1,6 @@
 # Workshop 4: Epigenomics data &mdash; Visualization, Peak Calling, Quality Control, and Motif Finding
 
-**Before leaving class today, please fill out this [anonymous feedback form](https://goo.gl/forms/qyDvtfPletWNhbpj2) with your feedback on this BIOS201 course**
+**Before leaving class today, please fill out this [anonymous feedback form](https://goo.gl/forms/PNjPd0m3Q0jQp6KE2) with your feedback on this BIOS201 course**
 
 In today's workshop we will be analyzing some ATAC-seq data as an example of epigenomics data analysis. This analysis is fairly similar to what one might do with ChIP-seq or DNase-seq data.  
 
@@ -260,7 +260,7 @@ The output have been added to the class WWW folder and can be found at http://we
 
 ## Feedback form
 
-**Before leaving class today, please fill out this [anonymous feedback form](https://goo.gl/forms/qyDvtfPletWNhbpj2) with your feedback on this BIOS201 course**
+**Before leaving class today, please fill out this [anonymous feedback form](https://goo.gl/forms/PNjPd0m3Q0jQp6KE2) with your feedback on this BIOS201 course**
 
 ## Finding differential peaks [optional challenge]
 
