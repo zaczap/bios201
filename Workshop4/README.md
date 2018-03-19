@@ -24,8 +24,8 @@ We have already aligned and filtered the reads &mdash; we will be starting this 
 
 Follow the setup steps outlined in the first workshop.
 ```
-ssh <sunetID>@corn.stanford.edu
-# e.g. ssh zappala@corn.stanford.edu
+ssh <sunetID>@rice.stanford.edu
+# e.g. ssh zappala@rice.stanford.edu
 ```
 
 Once connected, run:
@@ -58,7 +58,7 @@ The generic command we will be using is:
 # EXAMPLE FORMAT - DO NOT RUN
 # bamPEFragmentSize -b <bamfiles> \
                   -hist <plot output filename> \
-                  --maxFragmentLength <maximum fragment length>
+                  --maxFragmentLength <maximum fragment length> \
                   -T <plot title>
 ```
 
@@ -69,10 +69,10 @@ bamPEFragmentSize -b *.bam -hist fragmentSizes.png --maxFragmentLength 500 \
                   -T "Fragment sizes of ATAC-seq data"
 ```
 
-To look at our fragment sizes, we will take advantage of the "WWW" folder in your home directory. Copy the fragment sizes plot to that directory:
+To look at our fragment sizes, we will take advantage of the "WWW" folder in your afs-home directory. Copy the fragment sizes plot to that directory:
 
 ```
-cp fragmentSizes.png ~/WWW/
+cp fragmentSizes.png ~/afs-home/WWW/
 ```
 Now navigate in your web browser to  http://web.stanford.edu/~sunet/, filling in sunet with your own sunet id. You should see a list of files, including fragmentSizes.png.  Click on it to see the plot. 
 
@@ -124,7 +124,7 @@ Now we're going to add some of our own data.  Click on the 'add custom tracks' g
 We are going to give a URL pointing to our data.  To do that, we first have to copy the data to somewhere it is publically available. Copy all your bigwig files to your WWW folder:
 
 ``` 
-cp *.bw ~/WWW/
+cp *.bw ~/afs-home/WWW/
 ```
 
 Now if you go to http://web.stanford.edu/~sunet/, fillling in sunet with your own sunet id, you will see a list of files.  Now enter http://web.stanford.edu/~sunet/Donor2596-NK.chr4.bw (again substituting sunet with your own id) into the `Paste URLs or data` box.  Then click `submit`. You will get taken to another screen, where you should click the `go` button next to view in `Genome Browser`. You should now see some data!
@@ -185,8 +185,7 @@ To learn more about these options and the other available options, read through 
 For our first sample:
 
 ```
-macs2 callpeak --treatment Donor2596-NK.chr4.bam --name Donor2596-NK --format BAMPE \
-  --nomodel --call-summits --nolambda --keep-dup all -q 0.01 -g 1.7e8
+macs2 callpeak --treatment Donor2596-NK.chr4.bam --name Donor2596-NK --format BAMPE --nomodel --call-summits --nolambda --keep-dup all -q 0.01 -g 1.7e8
 ```
 
 Now do the same for the other three bam files, replacing the `--treatment` and `--name` arguments.  
@@ -208,7 +207,7 @@ To be able to visualize the narrowPeak files in UCSC Genome Browser, we have to 
 
 ``` 
 echo 'track type=narrowPeak name="Donor2596 NK Peaks"' | cat - Donor2596-NK_peaks.narrowPeak > \
-      ~/WWW/Donor2596-NK_peaks.narrowPeak 
+      ~/afs-home/WWW/Donor2596-NK_peaks.narrowPeak 
 ```
 
 Then add the tracks to your UCSC genome browser session by pasting the appropriate link.
