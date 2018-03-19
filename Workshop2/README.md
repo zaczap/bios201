@@ -37,8 +37,8 @@ Setup
 -----
 Follow the setup steps outlined in the first workshop.
 ```
-ssh <sunetID>@corn.stanford.edu
-# e.g. ssh zappala@corn.stanford.edu
+ssh <sunetID>@rice.stanford.edu
+# e.g. ssh zappala@rice.stanford.edu
 ```
 
 Once connected, run:
@@ -282,8 +282,8 @@ samtools index bam_pass2/Norm1_Aligned.out.sorted.bam
 If you're using a Mac, you can skip this next step. If you're running PuTTY on
 Windows, you'll need to install [Xming](https://sourceforge.net/projects/xming/files/latest/download), an 
 X11 forwarding client. Once you've installed Xming, open
-a new PuTTY window and log in to corn as usual, except on the initial PuTTY
-window, after typing in username<nolink>@corn.stanford.edu, then go to
+a new PuTTY window and log in to rice as usual, except on the initial PuTTY
+window, after typing in username<nolink>@rice.stanford.edu, then go to
 Connection -\> SSH -\> X11 and check the box labeled "Enable X11
 forwarding". Then press the "Open" button to open an SSH connection with
 X11 forwarding, used for showing graphical interfaces over a remote connection.
@@ -292,14 +292,14 @@ If you are using a Mac, you need to have
 [XQuartz](https://www.xquartz.org/) installed. You may need to restart
 your computer after installing XQuartz for it to work.
 
-Then we want to launch IGV. To do this on corn, open **a new terminal window**
+Then we want to launch IGV. To do this on rice, open **a new terminal window**
 and `ssh` again, this time providing -X. Then run through the remaining
 [setup
 steps](https://github.com/zaczap/bios201/blob/master/setup.md). You can
 keep the other terminal window you were working with open because we will
 go back to it.
 ```
-ssh <sunet>@corn.stanford.edu -X
+ssh <sunet>@rice.stanford.edu -X
 
 # run setup script one of either, depending on your shell:
 # source /afs/ir/class/bios201/setup/setup_tcsh.sh
@@ -312,7 +312,7 @@ Be patient while IGV lauches in a separate graphical window. This can take
 a bit of time. Once the IGV window appears, go to **File** -> **Load from file**.
 You should then navigate to and select `bam_pass2/Norm1_Aligned.out.sorted.bam`.
 
-**NOTE**: If you have trouble running IGV through corn, try installing
+**NOTE**: If you have trouble running IGV through rice, try installing
 [IGV](http://software.broadinstitute.org/software/igv/download) on you
 laptop. If you run IGV from you laptop, go to **File** -> **Load from
 URL**. Enter http://web.stanford.edu/class/bios201/workshop2_bam/Norm1_Aligned.out.sorted.bam.
@@ -396,7 +396,7 @@ your laptop. If you haven't already, you'll need to install
 First we need to download the files we'll be working with. These are the
 counts files that STAR generated for us.
 
-### The rest of this is run on your laptop. Exit corn by typing `exit` or `CTRL-D`.
+### The rest of this is run on your laptop. Exit rice by typing `exit` or `CTRL-D`.
 
 In the commands below, you need to replace your sunet ID and the path to
 your copy of workshop 2.  
@@ -406,14 +406,14 @@ the files.
 
 ```
 # If you are using Mac or Linux, from the terminal, run:
-scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/bam_pass2/*_ReadsPerGene.out.tab .
-scp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/annotation/ensg2hgnc.txt .
+scp <your_sunet>@rice.stanford.edu:<path/to/your/workshop2>/bam_pass2/*_ReadsPerGene.out.tab .
+scp <your_sunet>@rice.stanford.edu:<path/to/your/workshop2>/annotation/ensg2hgnc.txt .
 
 # If you are using windows, open a windows command prompt (not PuTTY).
 # You can find the command prompt by searching for "cmd" or "command" in your programs.
 # Then run:
-pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/bam_pass2/*_ReadsPerGene.out.tab .
-pscp <your_sunet>@corn.stanford.edu:<path/to/your/workshop2>/annotation/ensg2hgnc.txt .
+pscp <your_sunet>@rice.stanford.edu:<path/to/your/workshop2>/bam_pass2/*_ReadsPerGene.out.tab .
+pscp <your_sunet>@rice.stanford.edu:<path/to/your/workshop2>/annotation/ensg2hgnc.txt .
 ```
 
 For example, my commands look like this:
@@ -421,8 +421,8 @@ For example, my commands look like this:
 pwd  # to get the path to my workshop 2
 # /afs/ir/users/e/t/etsang/bios201/workshop2
 
-scp etsang@corn.stanford.edu:/afs/ir/users/e/t/etsang/bios201/workshop2/bam_pass2/*_ReadsPerGene.out.tab .
-scp etsang@corn.stanford.edu:/afs/ir/users/e/t/etsang/bios201/workshop2/annotation/ensg2hgnc.txt .
+scp etsang@rice.stanford.edu:/afs/ir/users/e/t/etsang/bios201/workshop2/bam_pass2/*_ReadsPerGene.out.tab .
+scp etsang@rice.stanford.edu:/afs/ir/users/e/t/etsang/bios201/workshop2/annotation/ensg2hgnc.txt .
 ```
 
 The above commands will download a file with gene name mappings and 16
