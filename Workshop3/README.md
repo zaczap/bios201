@@ -352,11 +352,6 @@ ENSG00000170962 isn't a very descriptive name. Look up this gene on
 [GeneCards](http://www.genecards.org/cgi-bin/carddisp.pl?gene=PDGFD&keywords=ENSG00000170962)
 to find its common name.
 
-The authors of the IPF paper created an [IPF Browser](http://52.32.252.126:3838/geneExplorer/) for viewing gene expression across
-other IPF datasets. Look this gene up on the browser.
-
-:question: Is this gene differentially expressed in other IPF datasets?
-
 [Previous work](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0092111#) 
 has implicated MUC5B and DSP as differentially expressed genes in IPF. 
 Test these genes to see if they're replicated in our analysis.
