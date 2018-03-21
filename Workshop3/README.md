@@ -26,17 +26,17 @@ This workshop will enable you to do the following:
 ## Setup
 
 We'll be doing today's workshop entirely in RStudio; however, we first need to copy a few data files from
-corn to your local machine. Using Command Prompt in Windows or Terminal in Mac, `cd` to the folder
-in which you want to copy the data files. You should copy the whole workshop3 folder from corn:
+rice to your local machine. Using Command Prompt in Windows or Terminal in Mac, `cd` to the folder
+in which you want to copy the data files. You should copy the whole workshop3 folder from rice:
 
 On Mac:
 ```
-scp -r <yourname>@corn.stanford.edu:/afs/.ir/class/bios201/workshop3 .
+scp -r <yourname>@rice.stanford.edu:/afs/.ir/class/bios201/workshop3 .
 ```
 
 Or on Windows:
 ```
-pscp -r <yourname>@corn.stanford.edu:/afs/.ir/class/bios201/workshop3 .
+pscp -r <yourname>@rice.stanford.edu:/afs/.ir/class/bios201/workshop3 .
 ```
 
 Now open RStudio. In case you want to rerun or modify your code, we recommend typing your code into
