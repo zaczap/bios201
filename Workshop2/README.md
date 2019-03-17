@@ -441,6 +441,9 @@ necessary here.
 ```
 source("http://bioconductor.org/biocLite.R")
 biocLite("DESeq2")
+```
+Once `DESeq2` is installed, install `pheatmap`.
+```
 install.packages("pheatmap")
 ```
 
