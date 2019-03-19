@@ -234,6 +234,15 @@ We worked with BAM files last week (they were the output from bwa that we provid
 as input to GATK). The BAM files we are looking at this week follow the
 same format; we are just taking more time to dig into what that looks like.
 
+Here we need to check to make sure you're running the correct version of STAR. Type
+```
+samtools
+```
+and check the version number shown. If you see a version other than "Version: 1.3.1", then 
+you need to rerun the setup_bash.sh command shown at the beginning of this workshop, 
+or if you're running this on a machine other than rice, you can manually input the path 
+to your own samtools installation, wherever `samtools` is written in the following instructions.
+
 Let's take a look at the first line of one of the bam files we just
 created with STAR:
 ```
