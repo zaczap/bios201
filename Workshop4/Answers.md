@@ -38,9 +38,12 @@ wc -l *.narrowPeak
 ```
 
    1961 Donor2596-NK_peaks.narrowPeak
-   9652 Donor4983-HSC_peaks.narrowPeak
-  15013 Donor5483-NK_peaks.narrowPeak
-  10381 Donor7256-HSC_peaks.narrowPeak
+   
+   3951 Donor4983-HSC_peaks.narrowPeak
+   
+   2353 Donor5483-NK_peaks.narrowPeak
+   
+   5855 Donor7256-HSC_peaks.narrowPeak
   
  Note however that some of these are the same peak, but with different summits. To get just the unique peaks, you could use the bedtools merge command.   
 
@@ -54,7 +57,7 @@ Three peaks and 6 summits.  A peak can have multiple called summits.
 bedtools merge -i all_peaks.bed | wc -l
 ```
 
-22075 peaks
+5537 peaks
 
 :question: What is the the most enriched known motif in the NK peaks? In the HSC peaks?
 
