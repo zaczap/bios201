@@ -448,8 +448,10 @@ If you get asked whether you want to update existing packages, you can
 type "n" for no. Updating packages can take a long time and shouldn't be
 necessary here.
 ```
-source("http://bioconductor.org/biocLite.R")
-biocLite("DESeq2")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
 ```
 Once `DESeq2` is installed, install `pheatmap`.
 ```
