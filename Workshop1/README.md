@@ -1,5 +1,8 @@
 # Workshop 1: Variant calling from DNA sequencing data
 
+**NOTE**: If you're viewing this page as part of the 2020 BIOS201 class or later,
+please view the latest version of the course at (https://github.com/smontgomlab/bios201/tree/master/Workshop1).
+
 The exercises in this tutorial require you to create your own commands to run command-line bioinformatics tools.
 To get the most from the tutorial, we recommend that you spend some time thinking about how to form these commands, 
 and experiment to see what does and doesn’t work. However, if you get stuck or you just need to see the 
